@@ -1,0 +1,58 @@
+[
+    // {
+    //     "name": "wrong",
+    //     "path": "E:\\project\\dzjz\\dossier"
+    // },
+    // {
+    //     "name": "wrong2",
+    //     "path": "\\dzjz\\dossier"
+    // },
+    // {
+    //     "name": "wrong3",
+    //     "path": "\\dzjz/"
+    // },
+    // {
+    //     "name": "wrong4",
+    //     "path": "E:\\project\\dzjz\\dossier-web/"
+    // },
+    // {
+    //     "name": "wrong5",
+    //     "path": "E:\\project\\dzjz\\dossier-web\\index.html"
+    // },
+    {
+        "name": "dossier-web",
+        "path": "E:\\project\\dzjz\\dossier-web"
+    },
+    {
+        "name": "FY_PRD_CLFX",
+        "path": "E:\\project\\dzjz\\FY_PRD_CLFX"
+    },
+    {
+        "name": "FY_PRD_CLFX_PRO",
+        "path": "E:\\project\\dzjz\\FY_PRD_CLFX_PRO"
+    },
+    {
+        "name": "FY_PRD_DZJZ",
+        "path": "E:\\project\\dzjz\\FY_PRD_DZJZ"
+    },
+    {
+        "name": "FY_PRD_DZJZ_PRO",
+        "path": "E:\\project\\dzjz\\FY_PRD_DZJZ_PRO"
+    },
+    {
+        "name": "FY_PRD_DZJZ_PRO_DOC",
+        "path": "E:\\project\\dzjz\\FY_PRD_DZJZ_PRO_DOC"
+    },
+    {
+        "name": "40_source",
+        "path": "E:\\project\\np\\40_source"
+    },
+    {
+        "name": "GZ_Study",
+        "path": "E:\\project\\GZ_Study"
+    },
+    {
+        "name": "gzkfbdocs",
+        "path": "E:\\project\\gzkfbdocs"
+    }
+]
