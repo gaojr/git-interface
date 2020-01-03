@@ -14,15 +14,19 @@ public enum Titles {
     /**
      * 增加
      */
-    TITLE_ADD("Add"),
+    ADD("Add"),
     /**
-     * 增加
+     * 获取
      */
-    TITLE_REFRESH("Refresh"),
+    FETCH("Fetch"),
     /**
-     * 增加
+     * 变基
      */
-    TITLE_REMOVE("Remove");
+    REBASE("Rebase"),
+    /**
+     * 移除
+     */
+    REMOVE("Remove");
 
     /**
      * 标题

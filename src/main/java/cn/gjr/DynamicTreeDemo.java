@@ -27,9 +27,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static cn.gjr.constants.Commands.*;
-import static cn.gjr.constants.Titles.*;
-
 /**
  * 动态树 Demo
  *
@@ -51,12 +48,12 @@ public class DynamicTreeDemo extends JPanel implements ActionListener {
         treePanel = new DynamicTree();
         createTree(treePanel);
 
-        // Lay everything out.
+        createButtons1();
         // 调整大小
         treePanel.setPreferredSize(new Dimension(500, 400));
         add(treePanel, BorderLayout.CENTER);
 
-        createButtons();
+        createButtons2();
     }
 
     /**
@@ -90,19 +87,32 @@ public class DynamicTreeDemo extends JPanel implements ActionListener {
     /**
      * 生成并添加按钮
      */
-    private void createButtons() {
-        // 新增按钮 = 新增仓库
-        JButton addButton = createButton(TITLE_ADD, COMMAND_ADD);
+    private void createButtons1() {
+        // 新增按钮 = 拉取分支状态
+        JButton fetchButton = createButton(Titles.FETCH, Commands.FETCH);
         // 移除按钮 = 移除仓库
-        JButton removeButton = createButton(TITLE_REMOVE, COMMAND_REMOVE);
-        // 刷新按钮 = 拉取并更新所有分支状态
-        JButton refreshButton = createButton(TITLE_REFRESH, COMMAND_REFRESH);
+        JButton rebaseButton = createButton(Titles.REBASE, Commands.REBASE);
+
+        // 添加到面板
+        JPanel btnPanel = new JPanel(new GridLayout(0, 3));
+        btnPanel.add(fetchButton);
+        btnPanel.add(rebaseButton);
+        add(btnPanel, BorderLayout.NORTH);
+    }
+
+    /**
+     * 生成并添加按钮
+     */
+    private void createButtons2() {
+        // 新增按钮 = 新增仓库
+        JButton addButton = createButton(Titles.ADD, Commands.ADD);
+        // 移除按钮 = 移除仓库
+        JButton removeButton = createButton(Titles.REMOVE, Commands.REMOVE);
 
         // 添加到面板
         JPanel btnPanel = new JPanel(new GridLayout(0, 3));
         btnPanel.add(addButton);
         btnPanel.add(removeButton);
-        btnPanel.add(refreshButton);
         add(btnPanel, BorderLayout.SOUTH);
     }
 
@@ -135,7 +145,7 @@ public class DynamicTreeDemo extends JPanel implements ActionListener {
             DefaultMutableTreeNode rNode = treePanel.addObject(null, repository, true);
             // TODO 生成树节点后面的按钮
             for (Branch branch : repository.getBranchList()) {
-                DefaultMutableTreeNode bNode = treePanel.addObject(rNode, branch);
+                DefaultMutableTreeNode bNode = treePanel.addObject(rNode, branch, true);
                 // TODO 生成树节点后面的按钮
             }
         }
@@ -199,15 +209,18 @@ public class DynamicTreeDemo extends JPanel implements ActionListener {
     public void actionPerformed(ActionEvent event) {
         Commands command = Commands.valueOf(event.getActionCommand());
         switch (command) {
-            case COMMAND_ADD:
+            case ADD:
                 treePanel.add();
-                return;
-            case COMMAND_REMOVE:
+                break;
+            case REMOVE:
                 treePanel.remove();
-                return;
-            case COMMAND_REFRESH:
-                treePanel.refresh();
-                return;
+                break;
+            case FETCH:
+                treePanel.fetch();
+                break;
+            case REBASE:
+                treePanel.rebase();
+                break;
             default:
                 log.error("Error Command!");
         }

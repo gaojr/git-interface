@@ -40,15 +40,6 @@ public class DynamicTree extends JPanel {
     }
 
     /**
-     * 更新树
-     */
-    void refresh() {
-        // TODO 更新树
-        // TODO 同步处理Cache.repositoryList
-        treeModel.reload();
-    }
-
-    /**
      * 移除节点
      */
     void remove() {
@@ -66,71 +57,75 @@ public class DynamicTree extends JPanel {
     }
 
     /**
-     * Add child to the currently selected node.
+     * 拉取
      */
-    public DefaultMutableTreeNode addObject(Object child) {
-        DefaultMutableTreeNode parentNode;
-        TreePath parentPath = tree.getSelectionPath();
-
-        if (parentPath == null) {
-            parentNode = rootNode;
-        } else {
-            parentNode = (DefaultMutableTreeNode) (parentPath.getLastPathComponent());
-        }
-
-        return addObject(parentNode, child, true);
+    void fetch() {
+        // TODO 拉取
+        // TODO 同步处理Cache.repositoryList
     }
 
-    DefaultMutableTreeNode addObject(DefaultMutableTreeNode parent, Object child) {
-        return addObject(parent, child, false);
+    /**
+     * 变基
+     */
+    void rebase() {
+        // TODO 变基
+        // TODO 同步处理Cache.repositoryList
     }
 
-    DefaultMutableTreeNode addObject(DefaultMutableTreeNode parent, Object child, boolean shouldBeVisible) {
-        DefaultMutableTreeNode childNode = new DefaultMutableTreeNode(child);
-
+    /**
+     * 新增节点
+     *
+     * @param parent 父节点（为null时为根节点）
+     * @param child 子节点对象
+     * @param visible 是否显示
+     * @return 树节点
+     */
+    DefaultMutableTreeNode addObject(DefaultMutableTreeNode parent, Object child, boolean visible) {
         if (parent == null) {
             parent = rootNode;
         }
-
+        DefaultMutableTreeNode childNode = new DefaultMutableTreeNode(child);
         // It is key to invoke this on the TreeModel, and NOT DefaultMutableTreeNode
         treeModel.insertNodeInto(childNode, parent, parent.getChildCount());
 
-        // Make sure the user can see the lovely new node.
-        if (shouldBeVisible) {
+        if (visible) {
             tree.scrollPathToVisible(new TreePath(childNode.getPath()));
         }
         return childNode;
     }
 
-    class Listener implements TreeModelListener {
+    static class Listener implements TreeModelListener {
         @Override
         public void treeNodesChanged(TreeModelEvent e) {
-            DefaultMutableTreeNode node = (DefaultMutableTreeNode) (e.getTreePath().getLastPathComponent());
+            // TODO ?
+//            List<Repository> repositoryList = Cache.getRepositoryList();
+//            DefaultMutableTreeNode node = (DefaultMutableTreeNode) (e.getTreePath().getLastPathComponent());
 
             /*
-             * If the event lists children, then the changed
-             * node is the child of the node we've already
-             * gotten.  Otherwise, the changed node and the
-             * specified node are the same.
+             * If the event lists children, then the changed node is the child of the node we've already gotten.
+             * Otherwise, the changed node and the specified node are the same.
              */
 
-            int index = e.getChildIndices()[0];
-            node = (DefaultMutableTreeNode) (node.getChildAt(index));
-
-            System.out.println("The user has finished editing the node.");
-            System.out.println("New value: " + node.getUserObject());
+//            int index = e.getChildIndices()[0];
+//            node = (DefaultMutableTreeNode) (node.getChildAt(index));
         }
 
         @Override
         public void treeNodesInserted(TreeModelEvent e) {
+            // TODO ?
+//            List<Repository> repositoryList = Cache.getRepositoryList();
         }
 
         @Override
         public void treeNodesRemoved(TreeModelEvent e) {
+            // TODO ?
+//            List<Repository> repositoryList = Cache.getRepositoryList();
         }
 
         @Override
         public void treeStructureChanged(TreeModelEvent e) {
+            // TODO ?
+//            List<Repository> repositoryList = Cache.getRepositoryList();
         }
     }
 }
