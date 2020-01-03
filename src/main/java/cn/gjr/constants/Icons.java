@@ -1,7 +1,12 @@
 package cn.gjr.constants;
 
+import cn.gjr.utils.FileUtil;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.apache.commons.io.FileUtils;
+
+import java.io.File;
+import java.net.URL;
 
 /**
  * 常量-图标
@@ -12,21 +17,30 @@ import lombok.Getter;
 @Getter
 public enum Icons {
     /**
-     * TODO 获取
+     * 分支
      */
-    ICON_FETCH("fetch"),
+    BRANCH("branch"),
     /**
-     * TODO 变基
+     * 仓库
      */
-    ICON_REBASE("rebase");
+    REPOSITORY("repository");
 
     /**
-     * 路径
+     * 文件名
      */
-    String value;
+    File value;
+
+    Icons(String fileName) {
+        URL path = this.getClass().getResource("/icon/" + fileName + ".png");
+        File file = FileUtils.toFile(path);
+        if (!FileUtil.isImage(file)) {
+            file = null;
+        }
+        this.value = file;
+    }
 
     @Override
     public String toString() {
-        return value;
+        return value.getPath();
     }
 }
