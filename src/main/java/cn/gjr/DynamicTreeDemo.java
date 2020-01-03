@@ -53,7 +53,7 @@ public class DynamicTreeDemo extends JPanel implements ActionListener {
 
         // Lay everything out.
         // 调整大小
-        treePanel.setPreferredSize(new Dimension(300, 500));
+        treePanel.setPreferredSize(new Dimension(500, 400));
         add(treePanel, BorderLayout.CENTER);
 
         createButtons();

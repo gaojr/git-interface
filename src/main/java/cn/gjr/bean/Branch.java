@@ -50,6 +50,6 @@ public class Branch {
 
     @Override
     public String toString() {
-        return String.format("%s%s[%s] ↑%d↓%d+%d~%d-%d", isCurrent ? "*" : " ", name, upstream, ahead, behind, add, modify, delete);
+        return String.format("%s[%s] ↑%d↓%d+%d~%d-%d", name, upstream, ahead, behind, add, modify, delete);
     }
 }
