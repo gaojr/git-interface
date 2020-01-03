@@ -132,13 +132,10 @@ public class DynamicTreeDemo extends JPanel implements ActionListener {
 
         // 生成树
         for (Repository repository : repositoryList) {
-            String rName = repository.getName();
-            String path = repository.getPath();
-            DefaultMutableTreeNode rNode = treePanel.addObject(null, rName, true);
+            DefaultMutableTreeNode rNode = treePanel.addObject(null, repository, true);
             // TODO 生成树节点后面的按钮
             for (Branch branch : repository.getBranchList()) {
-                String bName = branch.getName();
-                DefaultMutableTreeNode bNode = treePanel.addObject(rNode, bName);
+                DefaultMutableTreeNode bNode = treePanel.addObject(rNode, branch);
                 // TODO 生成树节点后面的按钮
             }
         }
