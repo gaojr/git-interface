@@ -22,4 +22,9 @@ public class Repository extends Config {
      * 分支
      */
     private List<Branch> branchList;
+
+    @Override
+    public String toString() {
+        return String.format("%s (%s)", getName(), dir);
+    }
 }

@@ -47,4 +47,9 @@ public class Branch {
      * 删除文件数量
      */
     private int delete = 0;
+
+    @Override
+    public String toString() {
+        return String.format("%s%s[%s] ↑%d↓%d+%d~%d-%d", isCurrent ? "*" : " ", name, upstream, ahead, behind, add, modify, delete);
+    }
 }
