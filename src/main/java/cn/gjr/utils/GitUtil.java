@@ -197,9 +197,4 @@ public final class GitUtil {
             }
         }
     }
-
-    public static void main(String[] args) {
-//        File dir = new File("E:\\project\\dzjz\\dossier-web");
-//        branchList(dir);
-    }
 }
