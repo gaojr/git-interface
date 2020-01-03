@@ -164,12 +164,12 @@ public final class GitUtil {
             status = status.trim();
             if (StringUtils.startsWith(status, "D ")) {
                 delete++;
-            } else if (StringUtils.startsWith(status, "M ")) {
+            } else if (StringUtils.startsWith(status, "M ") || StringUtils.startsWith(status, "R ")) {
                 modify++;
             } else if (StringUtils.startsWith(status, "?? ") || StringUtils.startsWith(status, "A ")) {
                 add++;
             }
-            // TODO 还有一些奇怪的状态……例如: remaned,copied {@link https://git-scm.com/docs/git-status#_changed_tracked_entries}
+            // TODO 还有一些奇怪的状态……例如: copied {@link https://git-scm.com/docs/git-status#_changed_tracked_entries}
         }
         br.setAdd(add);
         br.setDelete(delete);
