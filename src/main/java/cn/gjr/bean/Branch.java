@@ -28,6 +28,10 @@ public class Branch {
      */
     private boolean isCurrent = false;
     /**
+     * 能否直接变基
+     */
+    private boolean canRebase = true;
+    /**
      * 领先提交数量
      */
     private int ahead = 0;

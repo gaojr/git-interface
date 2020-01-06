@@ -166,11 +166,11 @@ public final class GitUtil {
         int modify = 0;
         for (String status : statuses) {
             status = status.trim();
-            if (StringUtils.startsWith(status, "D ")) {
+            if (StringUtils.startsWithAny(status, "D", "UD", "UU")) {
                 delete++;
-            } else if (StringUtils.startsWithAny(status, "M ", "R ")) {
+            } else if (StringUtils.startsWithAny(status, "M", "R")) {
                 modify++;
-            } else if (StringUtils.startsWithAny(status, "?? ", "A ")) {
+            } else if (StringUtils.startsWithAny(status, "??", "A", "UA")) {
                 add++;
             }
             // TODO 还有一些奇怪的状态……例如: copied {@link https://git-scm.com/docs/git-status#_changed_tracked_entries}
@@ -178,6 +178,10 @@ public final class GitUtil {
         br.setAdd(add);
         br.setDelete(delete);
         br.setModify(modify);
+
+        if (add > 0 || modify > 0 || delete > 0) {
+            br.setCanRebase(false);
+        }
     }
 
     /**
