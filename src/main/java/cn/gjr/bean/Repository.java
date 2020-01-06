@@ -1,10 +1,10 @@
 package cn.gjr.bean;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 import java.io.File;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 仓库
@@ -12,7 +12,6 @@ import java.util.List;
  * @author GaoJunru
  */
 @Data
-@EqualsAndHashCode(callSuper = true)
 public class Repository extends Config {
     /**
      * 目录
@@ -25,6 +24,23 @@ public class Repository extends Config {
 
     @Override
     public String toString() {
-        return String.format("%s (%s)", getName(), dir);
+        return String.format("%s (%s)", getName(), dir.getPath());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Repository that = (Repository) o;
+        return Objects.equals(dir.getPath(), that.dir.getPath());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(dir.getPath());
     }
 }

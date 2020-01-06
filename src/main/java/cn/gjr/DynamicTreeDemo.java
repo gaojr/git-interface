@@ -26,6 +26,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 动态树 Demo
@@ -166,7 +167,6 @@ public class DynamicTreeDemo extends JPanel implements ActionListener {
 
     /**
      * 处理仓库列表
-     * TODO 过滤掉重复的路径、名称
      *
      * @param configList 仓库list
      * @return 校正后的仓库list
@@ -179,12 +179,13 @@ public class DynamicTreeDemo extends JPanel implements ActionListener {
             if (FileUtil.isDirectory(path) && GitUtil.isRepository(path)) {
                 Repository repository = new Repository();
                 repository.setName(e.getName());
-                repository.setPath(path);
-                repository.setDir(new File(path));
+                File dir = new File(path);
+                repository.setDir(dir);
+                repository.setPath(dir.getPath());
                 list.add(repository);
             }
         });
-        return list;
+        return deduplicate(list);
     }
 
     /**
@@ -198,11 +199,22 @@ public class DynamicTreeDemo extends JPanel implements ActionListener {
             String config = IOUtils.toString(inputStream, StandardCharsets.UTF_8);
             TypeToken<ArrayList<Config>> typeToken = new TypeToken<ArrayList<Config>>() {
             };
-            return JsonUtil.string2Bean(config, typeToken);
+            List<Config> list = JsonUtil.string2Bean(config, typeToken);
+            return deduplicate(list);
         } catch (IOException e) {
             log.error("Read Config Error!", e);
         }
         return Collections.emptyList();
+    }
+
+    /**
+     * 去重
+     *
+     * @param list 列表
+     * @return 去重后的列表
+     */
+    private <T> List<T> deduplicate(List<T> list) {
+        return list.stream().distinct().collect(Collectors.toList());
     }
 
     @Override
