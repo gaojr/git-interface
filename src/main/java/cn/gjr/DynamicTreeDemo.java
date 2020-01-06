@@ -3,7 +3,6 @@ package cn.gjr;
 import cn.gjr.bean.Branch;
 import cn.gjr.bean.Config;
 import cn.gjr.bean.Repository;
-import cn.gjr.cache.Cache;
 import cn.gjr.constants.Commands;
 import cn.gjr.constants.Titles;
 import cn.gjr.utils.FileUtil;
@@ -45,7 +44,7 @@ public class DynamicTreeDemo extends JPanel implements ActionListener {
         super(new BorderLayout());
         setOpaque(true);
 
-        // Create the components.
+        // 生成组件
         treePanel = new DynamicTree();
         createTree(treePanel);
 
@@ -57,41 +56,57 @@ public class DynamicTreeDemo extends JPanel implements ActionListener {
         createButtons2();
     }
 
-    /**
-     * 生成并显示界面
-     * For thread safety, this method should be invoked from the event-dispatching thread.
-     */
-    private static void createAndShowGUI() {
-        // 生成frame
-        JFrame frame = new JFrame("git工具");
-        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-
-        // 生成panel
-        DynamicTreeDemo newContentPane = new DynamicTreeDemo();
-        frame.setContentPane(newContentPane);
-
-        // 显示
-        frame.pack();
-        frame.setVisible(true);
-    }
-
-    public static void main(String[] args) {
-        if (!GitUtil.hasGit()) {
-            log.error("未安装git!!");
-            return;
+    @Override
+    public void actionPerformed(ActionEvent event) {
+        Commands command = Commands.valueOf(event.getActionCommand());
+        switch (command) {
+            case ADD:
+                treePanel.add();
+                break;
+            case REMOVE:
+                treePanel.remove();
+                break;
+            case FETCH:
+                treePanel.fetch();
+                break;
+            case REBASE:
+                treePanel.rebase();
+                break;
+            default:
+                log.error("Error Command!");
         }
-        // Schedule a job for the event-dispatching thread:
-        // creating and showing this application's GUI.
-        javax.swing.SwingUtilities.invokeLater(DynamicTreeDemo::createAndShowGUI);
     }
 
     /**
-     * 生成并添加按钮
+     * 生成树
+     *
+     * @param treePanel 面板
+     */
+    private void createTree(DynamicTree treePanel) {
+        List<Repository> repositoryList = config2Repository(readConfig());
+        generateRepositoryList(repositoryList);
+        treePanel.setRepositoryList(repositoryList);
+
+        // 生成树
+        for (Repository repository : repositoryList) {
+            DefaultMutableTreeNode rNode = treePanel.addObject(null, repository, true);
+            // TODO 按钮图片
+            // TODO 生成树节点后面的按钮
+            for (Branch branch : repository.getBranchList()) {
+                DefaultMutableTreeNode bNode = treePanel.addObject(rNode, branch, true);
+                // TODO 按钮图片
+                // TODO 生成树节点后面的按钮
+            }
+        }
+    }
+
+    /**
+     * 生成并添加按钮（拉取、变基）
      */
     private void createButtons1() {
-        // 新增按钮 = 拉取分支状态
+        // 拉取按钮 = 拉取分支状态
         JButton fetchButton = createButton(Titles.FETCH, Commands.FETCH);
-        // 移除按钮 = 移除仓库
+        // 变基按钮 = 变基
         JButton rebaseButton = createButton(Titles.REBASE, Commands.REBASE);
 
         // 添加到面板
@@ -102,7 +117,7 @@ public class DynamicTreeDemo extends JPanel implements ActionListener {
     }
 
     /**
-     * 生成并添加按钮
+     * 生成并添加按钮（新增、移除）
      */
     private void createButtons2() {
         // 新增按钮 = 新增仓库
@@ -129,27 +144,6 @@ public class DynamicTreeDemo extends JPanel implements ActionListener {
         addButton.setActionCommand(command.toString());
         addButton.addActionListener(this);
         return addButton;
-    }
-
-    /**
-     * 生成树
-     *
-     * @param treePanel 面板
-     */
-    private void createTree(DynamicTree treePanel) {
-        List<Repository> repositoryList = config2Repository(readConfig());
-        generateRepositoryList(repositoryList);
-        Cache.setRepositoryList(repositoryList);
-
-        // 生成树
-        for (Repository repository : repositoryList) {
-            DefaultMutableTreeNode rNode = treePanel.addObject(null, repository, true);
-            // TODO 生成树节点后面的按钮
-            for (Branch branch : repository.getBranchList()) {
-                DefaultMutableTreeNode bNode = treePanel.addObject(rNode, branch, true);
-                // TODO 生成树节点后面的按钮
-            }
-        }
     }
 
     /**
@@ -217,24 +211,30 @@ public class DynamicTreeDemo extends JPanel implements ActionListener {
         return list.stream().distinct().collect(Collectors.toList());
     }
 
-    @Override
-    public void actionPerformed(ActionEvent event) {
-        Commands command = Commands.valueOf(event.getActionCommand());
-        switch (command) {
-            case ADD:
-                treePanel.add();
-                break;
-            case REMOVE:
-                treePanel.remove();
-                break;
-            case FETCH:
-                treePanel.fetch();
-                break;
-            case REBASE:
-                treePanel.rebase();
-                break;
-            default:
-                log.error("Error Command!");
+    /**
+     * 生成并显示界面
+     */
+    private static void createAndShowGUI() {
+        // 生成frame
+        JFrame frame = new JFrame("git工具");
+        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+
+        // 生成panel
+        DynamicTreeDemo newContentPane = new DynamicTreeDemo();
+        frame.setContentPane(newContentPane);
+
+        // 显示
+        frame.pack();
+        frame.setVisible(true);
+    }
+
+    public static void main(String[] args) {
+        if (!GitUtil.hasGit()) {
+            log.error("未安装git!!");
+            return;
         }
+        // Schedule a job for the event-dispatching thread: creating and showing this application's GUI.
+        // For thread safety, this method should be invoked from the event-dispatching thread.
+        javax.swing.SwingUtilities.invokeLater(DynamicTreeDemo::createAndShowGUI);
     }
 }

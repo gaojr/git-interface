@@ -1,10 +1,13 @@
 package cn.gjr;
 
+import cn.gjr.bean.Repository;
+
 import javax.swing.*;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
 import javax.swing.tree.*;
 import java.awt.*;
+import java.util.List;
 
 /**
  * 动态树
@@ -15,6 +18,7 @@ public class DynamicTree extends JPanel {
     private DefaultMutableTreeNode rootNode;
     private DefaultTreeModel treeModel;
     private JTree tree;
+    private List<Repository> repositoryList;
 
     DynamicTree() {
         super(new GridLayout(1, 0));
@@ -36,14 +40,14 @@ public class DynamicTree extends JPanel {
      */
     void add() {
         // TODO 增加节点
-        // TODO 同步处理Cache.repositoryList
+        // TODO 同步处理 repositoryList
     }
 
     /**
      * 移除节点
      */
     void remove() {
-        // TODO 同步处理Cache.repositoryList
+        // TODO 同步处理 repositoryList
         TreePath currentSelection = tree.getSelectionPath();
         if (currentSelection != null) {
             // 有选择的节点
@@ -61,7 +65,7 @@ public class DynamicTree extends JPanel {
      */
     void fetch() {
         // TODO 拉取
-        // TODO 同步处理Cache.repositoryList
+        // TODO 同步处理 repositoryList
     }
 
     /**
@@ -69,7 +73,7 @@ public class DynamicTree extends JPanel {
      */
     void rebase() {
         // TODO 变基
-        // TODO 同步处理Cache.repositoryList
+        // TODO 同步处理 repositoryList
     }
 
     /**
@@ -98,7 +102,7 @@ public class DynamicTree extends JPanel {
         @Override
         public void treeNodesChanged(TreeModelEvent e) {
             // TODO ?
-//            List<Repository> repositoryList = Cache.getRepositoryList();
+//            List<Repository> repositoryList = this.repositoryList;
 //            DefaultMutableTreeNode node = (DefaultMutableTreeNode) (e.getTreePath().getLastPathComponent());
 
             /*
@@ -113,19 +117,23 @@ public class DynamicTree extends JPanel {
         @Override
         public void treeNodesInserted(TreeModelEvent e) {
             // TODO ?
-//            List<Repository> repositoryList = Cache.getRepositoryList();
+//            List<Repository> repositoryList = this.repositoryList;
         }
 
         @Override
         public void treeNodesRemoved(TreeModelEvent e) {
             // TODO ?
-//            List<Repository> repositoryList = Cache.getRepositoryList();
+//            List<Repository> repositoryList = this.repositoryList;
         }
 
         @Override
         public void treeStructureChanged(TreeModelEvent e) {
             // TODO ?
-//            List<Repository> repositoryList = Cache.getRepositoryList();
+//            List<Repository> repositoryList = this.repositoryList;
         }
+    }
+
+    public void setRepositoryList(List<Repository> repositoryList) {
+        this.repositoryList = repositoryList;
     }
 }

@@ -27,7 +27,11 @@ public final class GitUtil {
      * @return 命令运行结果
      */
     public static CommandResult branch(File dir) {
-        String command = "git branch --format=\"{\\\"name\\\":\\\"%(refname:short)\\\",\\\"upstream\\\":\\\"%(upstream:short)\\\",\\\"isCurrent\\\":\"%(if)%(HEAD)%(then)true%(else)false%(end)\",\\\"track\\\":\\\"%(upstream:track,nobracket)\\\"}%0a\"";
+        String command = "git branch --format=\"{" +
+                "\\\"name\\\":\\\"%(refname:short)\\\"," +
+                "\\\"upstream\\\":\\\"%(upstream:short)\\\"," +
+                "\\\"isCurrent\\\":\"%(if)%(HEAD)%(then)true%(else)false%(end)\"," +
+                "\\\"track\\\":\\\"%(upstream:track,nobracket)\\\"}%0a\"";
         return CommandUtil.run(command, dir);
     }
 
