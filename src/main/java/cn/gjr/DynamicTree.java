@@ -98,6 +98,15 @@ public class DynamicTree extends JPanel {
         return childNode;
     }
 
+    /**
+     * 设置渲染器
+     *
+     * @param render 树节点渲染器
+     */
+    void setRenderer(DefaultTreeCellRenderer render) {
+        tree.setCellRenderer(render);
+    }
+
     static class Listener implements TreeModelListener {
         @Override
         public void treeNodesChanged(TreeModelEvent e) {

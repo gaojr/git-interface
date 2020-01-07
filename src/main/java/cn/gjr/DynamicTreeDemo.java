@@ -4,6 +4,7 @@ import cn.gjr.bean.Branch;
 import cn.gjr.bean.Config;
 import cn.gjr.bean.Repository;
 import cn.gjr.constants.Commands;
+import cn.gjr.constants.Icons;
 import cn.gjr.constants.Titles;
 import cn.gjr.utils.FileUtil;
 import cn.gjr.utils.GitUtil;
@@ -15,6 +16,7 @@ import org.apache.commons.io.IOUtils;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeCellRenderer;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -46,7 +48,8 @@ public class DynamicTreeDemo extends JPanel implements ActionListener {
 
         // 生成组件
         treePanel = new DynamicTree();
-        createTree(treePanel);
+        createTree();
+        decorateTree();
 
         createButtons1();
         // 调整大小
@@ -79,10 +82,8 @@ public class DynamicTreeDemo extends JPanel implements ActionListener {
 
     /**
      * 生成树
-     *
-     * @param treePanel 面板
      */
-    private void createTree(DynamicTree treePanel) {
+    private void createTree() {
         List<Repository> repositoryList = config2Repository(readConfig());
         generateRepositoryList(repositoryList);
         treePanel.setRepositoryList(repositoryList);
@@ -90,14 +91,24 @@ public class DynamicTreeDemo extends JPanel implements ActionListener {
         // 生成树
         for (Repository repository : repositoryList) {
             DefaultMutableTreeNode rNode = treePanel.addObject(null, repository, true);
-            // TODO 按钮图片
-            // TODO 生成树节点后面的按钮
             for (Branch branch : repository.getBranchList()) {
                 DefaultMutableTreeNode bNode = treePanel.addObject(rNode, branch, true);
-                // TODO 按钮图片
-                // TODO 生成树节点后面的按钮
             }
         }
+    }
+
+    /**
+     * 装饰树
+     */
+    private void decorateTree() {
+        Icon rIcon = new ImageIcon(Icons.REPOSITORY.toString());
+        Icon bIcon = new ImageIcon(Icons.BRANCH.toString());
+        // 树节点渲染器
+        DefaultTreeCellRenderer render = new DefaultTreeCellRenderer();
+        render.setOpenIcon(rIcon);
+        render.setClosedIcon(rIcon);
+        render.setLeafIcon(bIcon);
+        treePanel.setRenderer(render);
     }
 
     /**
