@@ -7,10 +7,15 @@ import cn.gjr.utils.FileUtil;
 import cn.gjr.utils.GitUtil;
 import cn.gjr.utils.JsonUtil;
 import com.google.gson.reflect.TypeToken;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 
+import javax.swing.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,15 +32,81 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 class Base {
-    // TODO 写入配置
+
+    @Getter
+    @Setter
+    private List<Repository> repositoryList;
+
+    public static void main(String[] args) {
+        if (!GitUtil.hasGit()) {
+            log.error("未安装git!!");
+            return;
+        }
+        new Base();
+    }
+
+    private Base() {
+        // Schedule a job for the event-dispatching thread: creating and showing this application's GUI.
+        // For thread safety, this method should be invoked from the event-dispatching thread.
+        javax.swing.SwingUtilities.invokeLater(this::createAndShowGUI);
+    }
+
+    /**
+     * 生成并显示界面
+     */
+    private void createAndShowGUI() {
+        // 处理分支
+        repositoryList = config2Repository(readConfig());
+        generateRepositoryList(repositoryList);
+        // 生成frame
+        JFrame frame = new JFrame("git工具");
+        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        frame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                super.windowClosing(e);
+                writeConfig(repositoryList);
+            }
+        });
+        // 生成panel
+        JPanel panel = DynamicTreeDemo.createAndShowGUI(this);
+        // panel放入frame
+        frame.setContentPane(panel);
+        // 显示
+        frame.pack();
+        frame.setVisible(true);
+    }
+
+    /**
+     * 写入配置
+     */
+    private void writeConfig(List<Repository> repositoryList) {
+        List<Config> configList = repository2Config(repositoryList);
+        // TODO 写入配置
+    }
+
+    /**
+     * 处理配置列表
+     *
+     * @param repositoryList 仓库list
+     * @return 配置list
+     */
+    private List<Config> repository2Config(List<Repository> repositoryList) {
+        List<Config> list = new ArrayList<>(repositoryList.size());
+        repositoryList.forEach(e -> {
+            Config config = new Config(e);
+            list.add(config);
+        });
+        return deduplicate(list);
+    }
 
     /**
      * 读取配置
      *
      * @return 仓库list
      */
-    List<Config> readConfig() {
-        InputStream inputStream = this.getClass().getResourceAsStream("/config.json");
+    private List<Config> readConfig() {
+        InputStream inputStream = Base.class.getResourceAsStream("/config.json");
         try {
             String config = IOUtils.toString(inputStream, StandardCharsets.UTF_8);
             TypeToken<ArrayList<Config>> typeToken = new TypeToken<ArrayList<Config>>() {
@@ -54,7 +125,7 @@ class Base {
      * @param configList 仓库list
      * @return 校正后的仓库list
      */
-    List<Repository> config2Repository(List<Config> configList) {
+    private List<Repository> config2Repository(List<Config> configList) {
         List<Repository> list = new ArrayList<>(configList.size());
         configList.forEach(e -> {
             // 转为系统路径
@@ -77,7 +148,7 @@ class Base {
      *
      * @param repositoryList 仓库列表
      */
-    void generateRepositoryList(List<Repository> repositoryList) {
+    private void generateRepositoryList(List<Repository> repositoryList) {
         repositoryList.forEach(r -> {
             List<Branch> branches = GitUtil.getBranchList(r.getDir());
             r.setBranchList(branches);
@@ -90,7 +161,7 @@ class Base {
      * @param list 列表
      * @return 去重后的列表
      */
-    private <T> List<T> deduplicate(List<T> list) {
+    private static <T> List<T> deduplicate(List<T> list) {
         return list.stream().distinct().collect(Collectors.toList());
     }
 }

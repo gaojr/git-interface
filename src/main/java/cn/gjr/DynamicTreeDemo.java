@@ -1,12 +1,10 @@
 package cn.gjr;
 
 import cn.gjr.bean.Branch;
-import cn.gjr.bean.Config;
 import cn.gjr.bean.Repository;
 import cn.gjr.constants.Commands;
 import cn.gjr.constants.Icons;
 import cn.gjr.constants.Titles;
-import cn.gjr.utils.GitUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.swing.*;
@@ -29,14 +27,16 @@ public class DynamicTreeDemo extends JPanel implements ActionListener {
 
     /**
      * 构造函数
+     *
+     * @param base 基类
      */
-    private DynamicTreeDemo() {
+    private DynamicTreeDemo(Base base) {
         super(new BorderLayout());
         setOpaque(true);
 
         // 生成组件
         treePanel = new DynamicTree();
-        createTree();
+        createTree(base.getRepositoryList());
         decorateTree();
 
         createButtons1();
@@ -70,14 +70,10 @@ public class DynamicTreeDemo extends JPanel implements ActionListener {
 
     /**
      * 生成树
+     *
+     * @param repositoryList 仓库列表
      */
-    private void createTree() {
-        Base base = new Base();
-        List<Config> configList = base.readConfig();
-        List<Repository> repositoryList = base.config2Repository(configList);
-        base.generateRepositoryList(repositoryList);
-        treePanel.setRepositoryList(repositoryList);
-
+    private void createTree(List<Repository> repositoryList) {
         // 生成树
         for (Repository repository : repositoryList) {
             DefaultMutableTreeNode rNode = treePanel.addObject(null, repository, true);
@@ -149,28 +145,12 @@ public class DynamicTreeDemo extends JPanel implements ActionListener {
 
     /**
      * 生成并显示界面
+     *
+     * @param base 基类
+     * @return 面板
      */
-    private static void createAndShowGUI() {
-        // 生成frame
-        JFrame frame = new JFrame("git工具");
-        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-
+    static JPanel createAndShowGUI(Base base) {
         // 生成panel
-        DynamicTreeDemo newContentPane = new DynamicTreeDemo();
-        frame.setContentPane(newContentPane);
-
-        // 显示
-        frame.pack();
-        frame.setVisible(true);
-    }
-
-    public static void main(String[] args) {
-        if (!GitUtil.hasGit()) {
-            log.error("未安装git!!");
-            return;
-        }
-        // Schedule a job for the event-dispatching thread: creating and showing this application's GUI.
-        // For thread safety, this method should be invoked from the event-dispatching thread.
-        javax.swing.SwingUtilities.invokeLater(DynamicTreeDemo::createAndShowGUI);
+        return new DynamicTreeDemo(base);
     }
 }

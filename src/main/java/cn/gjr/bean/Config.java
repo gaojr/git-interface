@@ -1,6 +1,7 @@
 package cn.gjr.bean;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Objects;
 
@@ -10,6 +11,7 @@ import java.util.Objects;
  * @author GaoJunru
  */
 @Data
+@NoArgsConstructor
 public class Config {
     /**
      * 名称
@@ -19,6 +21,11 @@ public class Config {
      * 路径
      */
     private String path;
+
+    public Config(Repository e) {
+        name = e.getName();
+        path = e.getPath();
+    }
 
     @Override
     public boolean equals(Object o) {

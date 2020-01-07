@@ -18,7 +18,6 @@ public class DynamicTree extends JPanel {
     private DefaultMutableTreeNode rootNode;
     private DefaultTreeModel treeModel;
     private JTree tree;
-    private List<Repository> repositoryList;
 
     DynamicTree() {
         super(new GridLayout(1, 0));
@@ -111,7 +110,6 @@ public class DynamicTree extends JPanel {
         @Override
         public void treeNodesChanged(TreeModelEvent e) {
             // TODO ?
-//            List<Repository> repositoryList = this.repositoryList;
 //            DefaultMutableTreeNode node = (DefaultMutableTreeNode) (e.getTreePath().getLastPathComponent());
 
             /*
@@ -126,23 +124,16 @@ public class DynamicTree extends JPanel {
         @Override
         public void treeNodesInserted(TreeModelEvent e) {
             // TODO ?
-//            List<Repository> repositoryList = this.repositoryList;
         }
 
         @Override
         public void treeNodesRemoved(TreeModelEvent e) {
             // TODO ?
-//            List<Repository> repositoryList = this.repositoryList;
         }
 
         @Override
         public void treeStructureChanged(TreeModelEvent e) {
             // TODO ?
-//            List<Repository> repositoryList = this.repositoryList;
         }
-    }
-
-    public void setRepositoryList(List<Repository> repositoryList) {
-        this.repositoryList = repositoryList;
     }
 }
