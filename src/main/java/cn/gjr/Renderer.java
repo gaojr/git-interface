@@ -30,7 +30,7 @@ public class Renderer extends DefaultTreeCellRenderer {
         Object obj = node.getUserObject();
         if (GitUtil.isRepository(obj)) {
             setIcon(repositoryIcon);
-        } else if (leaf) {
+        } else if (leaf && !node.isRoot()) {
             setIcon(branchIcon);
         }
         return this;
