@@ -6,6 +6,7 @@ import cn.gjr.bean.Repository;
 import cn.gjr.utils.FileUtil;
 import cn.gjr.utils.GitUtil;
 import cn.gjr.utils.JsonUtil;
+import com.google.gson.JsonArray;
 import com.google.gson.reflect.TypeToken;
 import lombok.Getter;
 import lombok.Setter;
@@ -58,7 +59,7 @@ class Base {
     private void createAndShowGUI() {
         // 处理分支
         repositoryList = config2Repository(readConfig());
-        generateRepositoryList(repositoryList);
+        generateRepositoryList();
         // 生成frame
         JFrame frame = new JFrame("git工具");
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -66,7 +67,7 @@ class Base {
             @Override
             public void windowClosing(WindowEvent e) {
                 super.windowClosing(e);
-                writeConfig(repositoryList);
+                writeConfig();
             }
         });
         // 生成panel
@@ -83,24 +84,8 @@ class Base {
     /**
      * 写入配置
      */
-    private void writeConfig(List<Repository> repositoryList) {
-        List<Config> configList = repository2Config(repositoryList);
+    private void writeConfig() {
         // TODO 写入配置
-    }
-
-    /**
-     * 处理配置列表
-     *
-     * @param repositoryList 仓库list
-     * @return 配置list
-     */
-    private List<Config> repository2Config(List<Repository> repositoryList) {
-        List<Config> list = new ArrayList<>(repositoryList.size());
-        repositoryList.forEach(e -> {
-            Config config = new Config(e);
-            list.add(config);
-        });
-        return deduplicate(list);
     }
 
     /**
@@ -148,10 +133,8 @@ class Base {
     /**
      * 完善仓库列表
      * TODO 优化，提高速度
-     *
-     * @param repositoryList 仓库列表
      */
-    private void generateRepositoryList(List<Repository> repositoryList) {
+    private void generateRepositoryList() {
         repositoryList.forEach(r -> {
             List<Branch> branches = GitUtil.getBranchList(r.getDir());
             r.setBranchList(branches);
