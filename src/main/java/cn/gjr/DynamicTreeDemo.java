@@ -3,13 +3,11 @@ package cn.gjr;
 import cn.gjr.bean.Branch;
 import cn.gjr.bean.Repository;
 import cn.gjr.constants.Commands;
-import cn.gjr.constants.Icons;
 import cn.gjr.constants.Titles;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeCellRenderer;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -37,13 +35,10 @@ public class DynamicTreeDemo extends JPanel implements ActionListener {
         // 生成组件
         treePanel = new DynamicTree();
         createTree(base.getRepositoryList());
-        decorateTree();
+        treePanel.setRenderer(new Renderer());
 
         createButtons1();
-        // 调整大小
-        treePanel.setPreferredSize(new Dimension(500, 400));
         add(treePanel, BorderLayout.CENTER);
-
         createButtons2();
     }
 
@@ -78,23 +73,9 @@ public class DynamicTreeDemo extends JPanel implements ActionListener {
         for (Repository repository : repositoryList) {
             DefaultMutableTreeNode rNode = treePanel.addObject(null, repository, true);
             for (Branch branch : repository.getBranchList()) {
-                DefaultMutableTreeNode bNode = treePanel.addObject(rNode, branch, true);
+                treePanel.addObject(rNode, branch, false);
             }
         }
-    }
-
-    /**
-     * 装饰树
-     */
-    private void decorateTree() {
-        Icon rIcon = new ImageIcon(Icons.REPOSITORY.toString());
-        Icon bIcon = new ImageIcon(Icons.BRANCH.toString());
-        // 树节点渲染器
-        DefaultTreeCellRenderer render = new DefaultTreeCellRenderer();
-        render.setOpenIcon(rIcon);
-        render.setClosedIcon(rIcon);
-        render.setLeafIcon(bIcon);
-        treePanel.setRenderer(render);
     }
 
     /**
@@ -150,7 +131,6 @@ public class DynamicTreeDemo extends JPanel implements ActionListener {
      * @return 面板
      */
     static JPanel createAndShowGUI(Base base) {
-        // 生成panel
         return new DynamicTreeDemo(base);
     }
 }

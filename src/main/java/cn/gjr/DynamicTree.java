@@ -1,12 +1,15 @@
 package cn.gjr;
 
+import cn.gjr.bean.Branch;
 import cn.gjr.bean.Repository;
+import org.apache.commons.lang3.ArrayUtils;
 
 import javax.swing.*;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
 import javax.swing.tree.*;
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -27,7 +30,7 @@ public class DynamicTree extends JPanel {
         treeModel.addTreeModelListener(new Listener());
         tree = new JTree(treeModel);
         tree.setEditable(true);
-        tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+        tree.getSelectionModel().setSelectionMode(TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION);
         tree.setShowsRootHandles(true);
 
         JScrollPane scrollPane = new JScrollPane(tree);
@@ -102,7 +105,7 @@ public class DynamicTree extends JPanel {
      *
      * @param render 树节点渲染器
      */
-    void setRenderer(DefaultTreeCellRenderer render) {
+    void setRenderer(TreeCellRenderer render) {
         tree.setCellRenderer(render);
     }
 

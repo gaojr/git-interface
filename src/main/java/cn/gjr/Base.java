@@ -14,6 +14,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
@@ -72,6 +73,8 @@ class Base {
         JPanel panel = DynamicTreeDemo.createAndShowGUI(this);
         // panel放入frame
         frame.setContentPane(panel);
+        // 调整大小
+        frame.setPreferredSize(new Dimension(500, 400));
         // 显示
         frame.pack();
         frame.setVisible(true);
