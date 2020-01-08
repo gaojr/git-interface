@@ -88,7 +88,7 @@ public class DynamicTreeDemo extends JPanel implements ActionListener {
         JButton rebaseButton = createButton(Titles.REBASE, Commands.REBASE);
 
         // 添加到面板
-        JPanel btnPanel = new JPanel(new GridLayout(0, 3));
+        JPanel btnPanel = new JPanel(new GridLayout(0, 2));
         btnPanel.add(fetchButton);
         btnPanel.add(rebaseButton);
         add(btnPanel, BorderLayout.NORTH);
@@ -104,7 +104,7 @@ public class DynamicTreeDemo extends JPanel implements ActionListener {
         JButton removeButton = createButton(Titles.REMOVE, Commands.REMOVE);
 
         // 添加到面板
-        JPanel btnPanel = new JPanel(new GridLayout(0, 3));
+        JPanel btnPanel = new JPanel(new GridLayout(0, 2));
         btnPanel.add(addButton);
         btnPanel.add(removeButton);
         add(btnPanel, BorderLayout.SOUTH);

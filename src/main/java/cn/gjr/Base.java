@@ -74,7 +74,7 @@ class Base {
         // panel放入frame
         frame.setContentPane(panel);
         // 调整大小
-        frame.setPreferredSize(new Dimension(500, 400));
+        frame.setPreferredSize(new Dimension(450, 400));
         // 显示
         frame.pack();
         frame.setVisible(true);
