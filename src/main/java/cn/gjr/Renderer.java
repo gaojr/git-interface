@@ -1,7 +1,7 @@
 package cn.gjr;
 
-import cn.gjr.bean.Repository;
 import cn.gjr.constants.Icons;
+import cn.gjr.utils.GitUtil;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -26,22 +26,13 @@ public class Renderer extends DefaultTreeCellRenderer {
     @Override
     public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus) {
         super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
-        if (isRepository(value)) {
+        DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
+        Object obj = node.getUserObject();
+        if (GitUtil.isRepository(obj)) {
             setIcon(repositoryIcon);
         } else if (leaf) {
             setIcon(branchIcon);
         }
         return this;
-    }
-
-    /**
-     * 是否为仓库对象
-     *
-     * @param value 对象
-     * @return {@code true} 是
-     */
-    private boolean isRepository(Object value) {
-        DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
-        return node.getUserObject() instanceof Repository;
     }
 }

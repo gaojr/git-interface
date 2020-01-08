@@ -2,6 +2,7 @@ package cn.gjr.utils;
 
 import cn.gjr.bean.Branch;
 import cn.gjr.bean.CommandResult;
+import cn.gjr.bean.Repository;
 import com.google.gson.JsonObject;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -114,6 +115,16 @@ public final class GitUtil {
     }
 
     /**
+     * 是否为仓库对象
+     *
+     * @param obj 对象
+     * @return {@code true} 是
+     */
+    public static boolean isRepository(Object obj) {
+        return obj instanceof Repository;
+    }
+
+    /**
      * 判断是否安装git
      *
      * @return {@code true} 已安装
@@ -204,5 +215,15 @@ public final class GitUtil {
                 br.setBehind(Integer.parseInt(str));
             }
         }
+    }
+
+    /**
+     * 是否为分支对象
+     *
+     * @param obj 对象
+     * @return {@code true} 是
+     */
+    public static boolean isBranch(Object obj) {
+        return obj instanceof Branch;
     }
 }

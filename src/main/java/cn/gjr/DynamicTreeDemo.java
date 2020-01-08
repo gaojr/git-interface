@@ -33,7 +33,7 @@ public class DynamicTreeDemo extends JPanel implements ActionListener {
         setOpaque(true);
 
         // 生成组件
-        treePanel = new DynamicTree();
+        treePanel = new DynamicTree(base);
         createTree(base.getRepositoryList());
         treePanel.setRenderer(new Renderer());
 

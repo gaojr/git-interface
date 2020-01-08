@@ -2,6 +2,8 @@ package cn.gjr;
 
 import cn.gjr.bean.Branch;
 import cn.gjr.bean.Repository;
+import cn.gjr.utils.GitUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ArrayUtils;
 
 import javax.swing.*;
@@ -17,17 +19,21 @@ import java.util.List;
  *
  * @author GaoJunru
  */
+@Slf4j
 public class DynamicTree extends JPanel {
+    private Base base;
     private DefaultMutableTreeNode rootNode;
     private DefaultTreeModel treeModel;
     private JTree tree;
 
-    DynamicTree() {
+    DynamicTree(Base base) {
         super(new GridLayout(1, 0));
+        this.base = base;
 
         rootNode = new DefaultMutableTreeNode("仓库");
         treeModel = new DefaultTreeModel(rootNode);
         treeModel.addTreeModelListener(new Listener());
+
         tree = new JTree(treeModel);
         tree.setEditable(true);
         tree.getSelectionModel().setSelectionMode(TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION);
@@ -49,16 +55,29 @@ public class DynamicTree extends JPanel {
      * 移除节点
      */
     void remove() {
-        // TODO 同步处理 repositoryList
+        int count = tree.getSelectionCount();
+        if (count != 1) {
+            return;
+        }
         TreePath currentSelection = tree.getSelectionPath();
-        if (currentSelection != null) {
-            // 有选择的节点
-            DefaultMutableTreeNode currentNode = (DefaultMutableTreeNode) (currentSelection.getLastPathComponent());
-            TreeNode parent = currentNode.getParent();
-            if (parent != null) {
-                // 不是根节点
-                treeModel.removeNodeFromParent(currentNode);
-            }
+        // 有选择的节点
+        DefaultMutableTreeNode currentNode = (DefaultMutableTreeNode) (currentSelection.getLastPathComponent());
+        if (currentNode.isRoot()) {
+            // 是根节点
+            return;
+        }
+        Object obj = currentNode.getUserObject();
+        if (GitUtil.isBranch(obj)) {
+            // 是分支对象
+            return;
+        }
+        treeModel.removeNodeFromParent(currentNode);
+        // 同步处理 repositoryList
+        List<Repository> repositoryList = base.getRepositoryList();
+        if (GitUtil.isRepository(obj)) {
+            // 删除仓库
+            Repository rep = (Repository) obj;
+            repositoryList.remove(rep);
         }
     }
 
