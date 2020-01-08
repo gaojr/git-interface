@@ -13,14 +13,15 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.ObjectUtils;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -34,6 +35,8 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 class Base {
+
+    private File configFile;
 
     @Getter
     @Setter
@@ -57,6 +60,9 @@ class Base {
      * 生成并显示界面
      */
     private void createAndShowGUI() {
+        if (initConfigFile()) {
+            return;
+        }
         // 处理分支
         repositoryList = config2Repository(readConfig());
         generateRepositoryList();
@@ -82,10 +88,50 @@ class Base {
     }
 
     /**
+     * 初始化配置文件
+     *
+     * @return {@code true} 初始化失败
+     */
+    private boolean initConfigFile() {
+        try {
+            URL url = Base.class.getResource("/config.json");
+            configFile = new File(url.toURI());
+        } catch (URISyntaxException e) {
+            log.error("获取配置文件失败！", e);
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * 写入配置
      */
     private void writeConfig() {
-        // TODO 写入配置
+        List<Config> configList = repository2Config(repositoryList);
+        TypeToken<List<Config>> typeToken = new TypeToken<List<Config>>() {
+        };
+        JsonArray array = JsonUtil.list2Array(configList, typeToken);
+        String output = JsonUtil.array2String(array);
+        try (FileOutputStream outputStream = new FileOutputStream(configFile)) {
+            IOUtils.write(output, outputStream, StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            log.error("Write Config Error!", e);
+        }
+    }
+
+    /**
+     * 处理配置列表
+     *
+     * @param repositoryList 仓库list
+     * @return 配置list
+     */
+    private List<Config> repository2Config(List<Repository> repositoryList) {
+        List<Config> list = new ArrayList<>(repositoryList.size());
+        repositoryList.forEach(e -> {
+            Config config = new Config(e);
+            list.add(config);
+        });
+        return deduplicate(list);
     }
 
     /**
@@ -94,8 +140,7 @@ class Base {
      * @return 仓库list
      */
     private List<Config> readConfig() {
-        InputStream inputStream = Base.class.getResourceAsStream("/config.json");
-        try {
+        try (InputStream inputStream = new FileInputStream(configFile)) {
             String config = IOUtils.toString(inputStream, StandardCharsets.UTF_8);
             TypeToken<ArrayList<Config>> typeToken = new TypeToken<ArrayList<Config>>() {
             };
@@ -148,6 +193,9 @@ class Base {
      * @return 去重后的列表
      */
     private static <T> List<T> deduplicate(List<T> list) {
+        if (ObjectUtils.isEmpty(list)) {
+            return Collections.emptyList();
+        }
         return list.stream().distinct().collect(Collectors.toList());
     }
 }
