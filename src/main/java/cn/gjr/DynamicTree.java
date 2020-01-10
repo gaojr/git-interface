@@ -4,6 +4,7 @@ import cn.gjr.bean.Branch;
 import cn.gjr.bean.Repository;
 import cn.gjr.utils.GitUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 
 import javax.swing.*;
@@ -11,8 +12,8 @@ import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
 import javax.swing.tree.*;
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.*;
 
 /**
  * 动态树
@@ -21,7 +22,7 @@ import java.util.List;
  */
 @Slf4j
 public class DynamicTree extends JPanel {
-    private Base base;
+    private transient Base base;
     private DefaultMutableTreeNode rootNode;
     private DefaultTreeModel treeModel;
     private JTree tree;
@@ -93,6 +94,72 @@ public class DynamicTree extends JPanel {
      * 变基
      */
     void rebase() {
+        TreePath[] paths = tree.getSelectionPaths();
+        if (ArrayUtils.isEmpty(paths)) {
+            return;
+        }
+        boolean rebaseAll = false;
+        List<Repository> repositoryList = new ArrayList<>(paths.length);
+        List<Branch> branchList = new ArrayList<>(paths.length);
+        for (TreePath path : paths) {
+            int depth = path.getPathCount();
+            DefaultMutableTreeNode node = (DefaultMutableTreeNode) path.getLastPathComponent();
+            Object obj = node.getUserObject();
+            if (depth == 1) {
+                // 是根节点
+                rebaseAll = true;
+                break;
+            } else if (depth == 2) {
+                // 是仓库
+                Repository r = (Repository) obj;
+                repositoryList.add(r);
+            } else if (depth == 3) {
+                // 是分支
+                Branch b = (Branch) obj;
+                branchList.add(b);
+            }
+        }
+        if (rebaseAll) {
+            rebaseAll();
+        } else {
+            rebase(repositoryList, branchList);
+        }
+    }
+
+    /**
+     * 更新所有
+     */
+    private void rebaseAll() {
+        rebase(base.getRepositoryList(), Collections.emptyList());
+    }
+
+    /**
+     * 更新仓库、分支
+     *
+     * @param repositoryList 仓库列表
+     * @param branchList 分支列表
+     */
+    private void rebase(List<Repository> repositoryList, List<Branch> branchList) {
+        Set<Branch> branchSet = new HashSet<>(branchList);
+        repositoryList.forEach(e -> branchSet.addAll(e.getBranchList()));
+        // 更新分支
+        if (CollectionUtils.isEmpty(branchSet)) {
+            return;
+        }
+        branchSet.forEach(e -> {
+            String path = e.getDir().toString();
+            String name = e.getName();
+            rebase(path, name);
+        });
+    }
+
+    /**
+     * 根据路径和分支名更新分支
+     *
+     * @param path 分支所在路径
+     * @param name 分支名
+     */
+    private void rebase(String path, String name) {
         // TODO 变基
         // TODO 同步处理 repositoryList
     }
