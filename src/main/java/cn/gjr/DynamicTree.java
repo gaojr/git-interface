@@ -164,6 +164,7 @@ public class DynamicTree extends JPanel {
     private void reloadTree() {
         // 同步处理 repositoryList
         GitUtil.generateRepositoryList(base.getRepositoryList());
+        // 修改树
         rootNode.removeAllChildren();
         createTree(base.getRepositoryList());
         // 刷新树
