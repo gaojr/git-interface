@@ -22,6 +22,28 @@ public final class GitUtil {
     }
 
     /**
+     * 切回上一个分支
+     *
+     * @param dir 目录
+     * @return 命令运行结果
+     */
+    public static CommandResult checkoutBack(File dir) {
+        return checkout(dir, "-");
+    }
+
+    /**
+     * 切换分支
+     *
+     * @param dir 目录
+     * @param branchName 分支名
+     * @return 命令运行结果
+     */
+    public static CommandResult checkout(File dir, String branchName) {
+        String command = "git checkout " + branchName;
+        return CommandUtil.run(command, dir);
+    }
+
+    /**
      * 查看分支状态
      *
      * @param dir 目录
@@ -50,12 +72,14 @@ public final class GitUtil {
     /**
      * 变基
      *
-     * @param dir 目录
+     * @param branch 分支
      * @return 命令运行结果
      */
-    public static CommandResult rebase(File dir) {
-        String command = "git rebase";
-        return CommandUtil.run(command, dir);
+    public static CommandResult rebase(Branch branch) {
+        if (branch.isCurrent()) {
+            return rebase(branch.getDir());
+        }
+        return rebase(branch.getDir(), branch.getName());
     }
 
     /**
@@ -65,9 +89,45 @@ public final class GitUtil {
      * @param branchName 分支名
      * @return 命令运行结果
      */
-    public static CommandResult rebase(File dir, String branchName) {
-        String command = "git checkout " + branchName + " | git rebase | git checkout -";
+    private static CommandResult rebase(File dir, String branchName) {
+        CommandResult result = checkout(dir, branchName);
+        if (!result.isSuccess()) {
+            return result;
+        }
+        result = rebase(dir);
+        checkoutBack(dir);
+        return result;
+    }
+
+    /**
+     * 变基
+     *
+     * @param dir 目录
+     * @return 命令运行结果
+     */
+    private static CommandResult rebase(File dir) {
+        String command = "git rebase";
         return CommandUtil.run(command, dir);
+    }
+
+    /**
+     * 状态
+     *
+     * @param branch 分支
+     * @return 命令运行结果
+     */
+    public static CommandResult status(Branch branch) {
+        File dir = branch.getDir();
+        if (branch.isCurrent()) {
+            return status(dir);
+        }
+        CommandResult result = checkout(dir, branch.getName());
+        if (!result.isSuccess()) {
+            return result;
+        }
+        result = status(dir);
+        checkoutBack(dir);
+        return result;
     }
 
     /**
@@ -79,19 +139,6 @@ public final class GitUtil {
     public static CommandResult status(File dir) {
         String command = "git status --short";
         return CommandUtil.run(command, dir);
-    }
-
-    /**
-     * 状态
-     *
-     * @param dir 目录
-     * @param branchName 分支名
-     * @return 命令运行结果
-     */
-    public static CommandResult status(File dir, String branchName) {
-        String command = "git checkout " + branchName;
-        CommandUtil.run(command, dir);
-        return status(dir);
     }
 
     /**
@@ -154,7 +201,7 @@ public final class GitUtil {
             br.setUpstream(json.get("upstream").getAsString());
             String track = json.get("track").getAsString();
             branchTrack(br, track);
-            String status = status(dir, br.getName()).getMessage().trim();
+            String status = status(br).getMessage().trim();
             branchStatus(br, status);
             branchList.add(br);
         }
@@ -189,10 +236,7 @@ public final class GitUtil {
         br.setAdd(add);
         br.setDelete(delete);
         br.setModify(modify);
-
-        if (add > 0 || modify > 0 || delete > 0) {
-            br.setCanRebase(false);
-        }
+        br.setCanRebase(add < 1 && modify < 1 && delete < 1);
     }
 
     /**
@@ -225,5 +269,16 @@ public final class GitUtil {
      */
     public static boolean isBranch(Object obj) {
         return obj instanceof Branch;
+    }
+
+    /**
+     * 完善仓库列表
+     * TODO 优化，提高速度
+     */
+    public static void generateRepositoryList(List<Repository> repositoryList) {
+        repositoryList.forEach(e -> {
+            List<Branch> branches = GitUtil.getBranchList(e.getDir());
+            e.setBranchList(branches);
+        });
     }
 }

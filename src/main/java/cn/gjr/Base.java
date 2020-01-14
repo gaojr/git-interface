@@ -1,6 +1,5 @@
 package cn.gjr;
 
-import cn.gjr.bean.Branch;
 import cn.gjr.bean.Config;
 import cn.gjr.bean.Repository;
 import cn.gjr.utils.FileUtil;
@@ -65,7 +64,7 @@ class Base {
         }
         // 处理分支
         repositoryList = config2Repository(readConfig());
-        generateRepositoryList();
+        GitUtil.generateRepositoryList(repositoryList);
         // 生成frame
         JFrame frame = new JFrame("git工具");
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -173,17 +172,6 @@ class Base {
             }
         });
         return deduplicate(list);
-    }
-
-    /**
-     * 完善仓库列表
-     * TODO 优化，提高速度
-     */
-    private void generateRepositoryList() {
-        repositoryList.forEach(r -> {
-            List<Branch> branches = GitUtil.getBranchList(r.getDir());
-            r.setBranchList(branches);
-        });
     }
 
     /**
