@@ -34,7 +34,7 @@ public class DynamicTreeDemo extends JPanel implements ActionListener {
 
         // 生成组件
         treePanel = new DynamicTree(base);
-        createTree(base.getRepositoryList());
+        treePanel.createTree(base.getRepositoryList());
         treePanel.setRenderer(new Renderer());
 
         createButtons1();
@@ -63,20 +63,6 @@ public class DynamicTreeDemo extends JPanel implements ActionListener {
         }
     }
 
-    /**
-     * 生成树
-     *
-     * @param repositoryList 仓库列表
-     */
-    private void createTree(List<Repository> repositoryList) {
-        // 生成树
-        for (Repository repository : repositoryList) {
-            DefaultMutableTreeNode rNode = treePanel.addObject(null, repository, true);
-            for (Branch branch : repository.getBranchList()) {
-                treePanel.addObject(rNode, branch, false);
-            }
-        }
-    }
 
     /**
      * 生成并添加按钮（拉取、变基）

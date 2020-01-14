@@ -1,6 +1,7 @@
 package cn.gjr;
 
 import cn.gjr.bean.Branch;
+import cn.gjr.bean.CommandResult;
 import cn.gjr.bean.Repository;
 import cn.gjr.utils.GitUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -86,8 +87,12 @@ public class DynamicTree extends JPanel {
      * 拉取
      */
     void fetch() {
-        // TODO 拉取
-        // TODO 同步处理 repositoryList
+        List<Repository> repositoryList = base.getRepositoryList();
+        repositoryList.forEach(e -> {
+            CommandResult result = GitUtil.fetch(e.getDir());
+            log.info(e.getName() + " fetch " + result.isSuccess());
+        });
+        reloadTree();
     }
 
     /**
@@ -147,21 +152,37 @@ public class DynamicTree extends JPanel {
             return;
         }
         branchSet.forEach(e -> {
-            String path = e.getDir().toString();
-            String name = e.getName();
-            rebase(path, name);
+            CommandResult result = GitUtil.rebase(e);
+            log.info(e.getName() + " rebase " + result.isSuccess());
         });
+        reloadTree();
     }
 
     /**
-     * 根据路径和分支名更新分支
-     *
-     * @param path 分支所在路径
-     * @param name 分支名
+     * 重新加载树
      */
-    private void rebase(String path, String name) {
-        // TODO 变基
-        // TODO 同步处理 repositoryList
+    private void reloadTree() {
+        // 同步处理 repositoryList
+        GitUtil.generateRepositoryList(base.getRepositoryList());
+        rootNode.removeAllChildren();
+        createTree(base.getRepositoryList());
+        // 刷新树
+        treeModel.reload();
+    }
+
+    /**
+     * 生成树
+     *
+     * @param repositoryList 仓库列表
+     */
+    void createTree(List<Repository> repositoryList) {
+        // 生成树
+        for (Repository repository : repositoryList) {
+            DefaultMutableTreeNode rNode = addObject(null, repository, true);
+            for (Branch branch : repository.getBranchList()) {
+                addObject(rNode, branch, false);
+            }
+        }
     }
 
     /**
@@ -172,7 +193,7 @@ public class DynamicTree extends JPanel {
      * @param visible 是否显示
      * @return 树节点
      */
-    DefaultMutableTreeNode addObject(DefaultMutableTreeNode parent, Object child, boolean visible) {
+    private DefaultMutableTreeNode addObject(DefaultMutableTreeNode parent, Object child, boolean visible) {
         if (parent == null) {
             parent = rootNode;
         }
