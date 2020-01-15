@@ -13,7 +13,6 @@ import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
 import javax.swing.tree.*;
 import java.awt.*;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -51,27 +50,18 @@ public class DynamicTree extends JPanel {
      * 增加节点
      */
     void add() {
-        Repository repo = createRepo();
-        if (repo == null) {
-            log.info("添加失败，未选择或者该文件夹不是git仓库");
-            return;
-        }
-        // 增加节点
-        DefaultMutableTreeNode rNode = addObject(null, repo, true);
-        for (Branch branch : repo.getBranchList()) {
-            addObject(rNode, branch, false);
-        }
-        // 同步处理 repositoryList
-        base.getRepositoryList().add(repo);
+        new ChooseFrame(this);
     }
 
     /**
-     * TODO 生成仓库对象
+     * 增加
      *
-     * @return 仓库对象
+     * @param repo 仓库
      */
-    private Repository createRepo() {
-        return null;
+    void add(Repository repo) {
+        addNode(repo);
+        // 同步处理 repositoryList
+        base.getRepositoryList().add(repo);
     }
 
     /**
@@ -194,10 +184,20 @@ public class DynamicTree extends JPanel {
     void createTree(List<Repository> repositoryList) {
         // 生成树
         for (Repository repository : repositoryList) {
-            DefaultMutableTreeNode rNode = addObject(null, repository, true);
-            for (Branch branch : repository.getBranchList()) {
-                addObject(rNode, branch, false);
-            }
+            addNode(repository);
+        }
+    }
+
+    /**
+     * 添加节点
+     *
+     * @param repo 仓库
+     */
+    private void addNode(Repository repo) {
+        // 增加节点
+        DefaultMutableTreeNode rNode = addObject(null, repo, true);
+        for (Branch branch : repo.getBranchList()) {
+            addObject(rNode, branch, false);
         }
     }
 
