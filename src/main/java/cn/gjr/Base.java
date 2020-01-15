@@ -1,6 +1,5 @@
 package cn.gjr;
 
-import cn.gjr.bean.Config;
 import cn.gjr.bean.Repository;
 import cn.gjr.utils.FileUtil;
 import cn.gjr.utils.GitUtil;
@@ -13,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -34,9 +34,14 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 class Base {
-
+    /**
+     * 配置文件
+     */
     private File configFile;
 
+    /**
+     * 仓库列表
+     */
     @Getter
     @Setter
     private List<Repository> repositoryList;
@@ -76,7 +81,7 @@ class Base {
             return;
         }
         // 处理分支
-        repositoryList = config2Repository(readConfig());
+        repositoryList = readConfig();
         GitUtil.generateRepositoryList(repositoryList);
         // 生成frame
         JFrame frame = new JFrame("git工具");
@@ -119,10 +124,9 @@ class Base {
      * 写入配置
      */
     private void writeConfig() {
-        List<Config> configList = repository2Config(repositoryList);
-        TypeToken<List<Config>> typeToken = new TypeToken<List<Config>>() {
+        TypeToken<List<Repository>> typeToken = new TypeToken<List<Repository>>() {
         };
-        JsonArray array = JsonUtil.list2Array(configList, typeToken);
+        JsonArray array = JsonUtil.list2Array(repositoryList, typeToken);
         String output = JsonUtil.array2String(array);
         try (FileOutputStream outputStream = new FileOutputStream(configFile)) {
             IOUtils.write(output, outputStream, StandardCharsets.UTF_8);
@@ -132,32 +136,17 @@ class Base {
     }
 
     /**
-     * 处理配置列表
-     *
-     * @param repositoryList 仓库list
-     * @return 配置list
-     */
-    private List<Config> repository2Config(List<Repository> repositoryList) {
-        List<Config> list = new ArrayList<>(repositoryList.size());
-        repositoryList.forEach(e -> {
-            Config config = new Config(e);
-            list.add(config);
-        });
-        return deduplicate(list);
-    }
-
-    /**
      * 读取配置
      *
      * @return 仓库list
      */
-    private List<Config> readConfig() {
+    private List<Repository> readConfig() {
         try (InputStream inputStream = new FileInputStream(configFile)) {
             String config = IOUtils.toString(inputStream, StandardCharsets.UTF_8);
-            TypeToken<ArrayList<Config>> typeToken = new TypeToken<ArrayList<Config>>() {
+            TypeToken<ArrayList<Repository>> typeToken = new TypeToken<ArrayList<Repository>>() {
             };
-            List<Config> list = JsonUtil.string2Bean(config, typeToken);
-            return deduplicate(list);
+            List<Repository> list = JsonUtil.string2Bean(config, typeToken);
+            return config2Repository(list);
         } catch (IOException e) {
             log.error("Read Config Error!", e);
         }
@@ -170,18 +159,16 @@ class Base {
      * @param configList 仓库list
      * @return 校正后的仓库list
      */
-    private List<Repository> config2Repository(List<Config> configList) {
+    private List<Repository> config2Repository(List<Repository> configList) {
         List<Repository> list = new ArrayList<>(configList.size());
-        configList.forEach(e -> {
+        configList.stream().filter(e -> StringUtils.isNoneBlank(e.getName(), e.getPath())).forEach(e -> {
             // 转为系统路径
             String path = FilenameUtils.separatorsToSystem(e.getPath());
             if (FileUtil.isDirectory(path) && GitUtil.isRepository(path)) {
-                Repository repository = new Repository();
-                repository.setName(e.getName());
                 File dir = new File(path);
-                repository.setDir(dir);
-                repository.setPath(dir.getPath());
-                list.add(repository);
+                e.setDir(dir);
+                e.setPath(dir.getPath());
+                list.add(e);
             }
         });
         return deduplicate(list);

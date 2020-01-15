@@ -17,7 +17,7 @@ public final class JsonUtil {
     /**
      * gson构造器（序列化时输出null）
      */
-    private static final GsonBuilder BUILDER = new GsonBuilder().serializeNulls();
+    private static final GsonBuilder BUILDER = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().serializeNulls();
 
     private JsonUtil() {
     }

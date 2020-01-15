@@ -1,6 +1,7 @@
 package cn.gjr.bean;
 
 import com.google.gson.JsonObject;
+import com.google.gson.annotations.Expose;
 import lombok.Data;
 
 import java.io.File;
@@ -13,19 +14,31 @@ import java.util.Objects;
  * @author GaoJunru
  */
 @Data
-public class Repository extends Config {
+public class Repository {
+    /**
+     * 名称
+     */
+    @Expose
+    private String name;
+    /**
+     * 路径
+     */
+    @Expose
+    private String path;
     /**
      * 目录
      */
+    @Expose(serialize = false)
     private File dir;
     /**
      * 分支
      */
+    @Expose(serialize = false)
     private List<Branch> branchList;
 
     @Override
     public String toString() {
-        return String.format("%s (%s)", getName(), dir.getPath());
+        return String.format("%s (%s)", name, path);
     }
 
     @Override
@@ -37,13 +50,13 @@ public class Repository extends Config {
             return false;
         }
         Repository that = (Repository) o;
-        return Objects.equals(getName(), that.getName()) && Objects.equals(dir.getPath(), that.dir.getPath());
+        return Objects.equals(name, that.name) && Objects.equals(path, that.path);
     }
 
     @Override
     public int hashCode() {
         JsonObject json = new JsonObject();
-        json.addProperty(getName(), dir.getPath());
+        json.addProperty(name, path);
         return Objects.hash(json);
     }
 }
