@@ -74,6 +74,28 @@ class Base {
     }
 
     /**
+     * 生成框架
+     *
+     * @param title 标题
+     * @param panel 面板
+     * @param width 宽
+     * @param height 高
+     * @return 框架
+     */
+    public static JFrame createFrame(String title, JPanel panel, int width, int height) {
+        JFrame frame = new JFrame(title);
+        frame.setTitle(title);
+        frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        frame.setPreferredSize(new Dimension(width, height));
+        // panel放入frame
+        frame.setContentPane(panel);
+        // 显示
+        frame.pack();
+        frame.setVisible(true);
+        return frame;
+    }
+
+    /**
      * 生成并显示界面
      */
     private void createAndShowGUI() {
@@ -163,27 +185,5 @@ class Base {
             }
         });
         return deduplicate(list);
-    }
-
-    /**
-     * 生成框架
-     *
-     * @param title 标题
-     * @param panel 面板
-     * @param width 宽
-     * @param height 高
-     * @return 框架
-     */
-    public static JFrame createFrame(String title, JPanel panel, int width, int height) {
-        JFrame frame = new JFrame(title);
-        frame.setTitle(title);
-        frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        frame.setPreferredSize(new Dimension(width, height));
-        // panel放入frame
-        frame.setContentPane(panel);
-        // 显示
-        frame.pack();
-        frame.setVisible(true);
-        return frame;
     }
 }
