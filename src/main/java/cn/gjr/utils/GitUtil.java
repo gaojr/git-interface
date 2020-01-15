@@ -199,7 +199,7 @@ public final class GitUtil {
      * @param repository 仓库
      * @return 分支列表
      */
-    private static List<Branch> getBranchList(Repository repository) {
+    public static List<Branch> getBranchList(Repository repository) {
         String message = branch(repository.getDir()).getMessage().trim();
         String[] branches = message.split("\n\n");
         List<Branch> branchList = new ArrayList<>(branches.length);
