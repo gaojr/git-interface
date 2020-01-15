@@ -26,7 +26,11 @@ public enum Titles {
     /**
      * 移除
      */
-    REMOVE("Remove");
+    REMOVE("Remove"),
+    /**
+     * 保存
+     */
+    SAVE("Save");
 
     /**
      * 标题

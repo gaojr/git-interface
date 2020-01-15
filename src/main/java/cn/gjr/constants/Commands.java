@@ -26,7 +26,11 @@ public enum Commands {
     /**
      * 移除
      */
-    REMOVE("remove");
+    REMOVE("remove"),
+    /**
+     * 保存
+     */
+    SAVE("save");
 
     /**
      * 命令
