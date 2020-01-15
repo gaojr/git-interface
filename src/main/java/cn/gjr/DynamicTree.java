@@ -3,9 +3,9 @@ package cn.gjr;
 import cn.gjr.bean.Branch;
 import cn.gjr.bean.CommandResult;
 import cn.gjr.bean.Repository;
+import cn.gjr.bean.Selected;
 import cn.gjr.utils.GitUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 
 import javax.swing.*;
@@ -13,8 +13,9 @@ import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
 import javax.swing.tree.*;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.*;
 
 /**
  * 动态树
@@ -87,8 +88,8 @@ public class DynamicTree extends JPanel {
      * 拉取
      */
     void fetch() {
-        List<Repository> repositoryList = base.getRepositoryList();
-        repositoryList.forEach(e -> {
+        Selected selection = getSelection();
+        selection.getRepositorySet().forEach(e -> {
             CommandResult result = GitUtil.fetch(e.getDir());
             log.info(e.getName() + " fetch " + result.isSuccess());
         });
@@ -99,63 +100,57 @@ public class DynamicTree extends JPanel {
      * 变基
      */
     void rebase() {
-        TreePath[] paths = tree.getSelectionPaths();
-        if (ArrayUtils.isEmpty(paths)) {
-            return;
-        }
-        boolean rebaseAll = false;
-        List<Repository> repositoryList = new ArrayList<>(paths.length);
-        List<Branch> branchList = new ArrayList<>(paths.length);
-        for (TreePath path : paths) {
-            int depth = path.getPathCount();
-            DefaultMutableTreeNode node = (DefaultMutableTreeNode) path.getLastPathComponent();
-            Object obj = node.getUserObject();
-            if (depth == 1) {
-                // 是根节点
-                rebaseAll = true;
-                break;
-            } else if (depth == 2) {
-                // 是仓库
-                Repository r = (Repository) obj;
-                repositoryList.add(r);
-            } else if (depth == 3) {
-                // 是分支
-                Branch b = (Branch) obj;
-                branchList.add(b);
-            }
-        }
-        if (rebaseAll) {
-            rebaseAll();
-        } else {
-            rebase(repositoryList, branchList);
-        }
-    }
-
-    /**
-     * 更新所有
-     */
-    private void rebaseAll() {
-        rebase(base.getRepositoryList(), Collections.emptyList());
-    }
-
-    /**
-     * 更新仓库、分支
-     *
-     * @param repositoryList 仓库列表
-     * @param branchList 分支列表
-     */
-    private void rebase(List<Repository> repositoryList, List<Branch> branchList) {
-        Set<Branch> branchSet = new HashSet<>(branchList);
-        repositoryList.forEach(e -> branchSet.addAll(e.getBranchList()));
-        // 更新分支
-        if (CollectionUtils.isEmpty(branchSet)) {
-            return;
-        }
-        branchSet.forEach(e -> {
+        Selected selection = getSelection();
+        selection.getBranchSet().forEach(e -> {
             CommandResult result = GitUtil.rebase(e);
             log.info(e.getName() + " rebase " + result.isSuccess());
         });
         reloadTree();
+    }
+
+    /**
+     * 获取已选的仓库列表和分支列表
+     *
+     * @return 选择对象
+     */
+    private Selected getSelection() {
+        TreePath[] paths = getSelectedPaths();
+        List<Repository> repositoryList = new ArrayList<>(paths.length);
+        List<Branch> branchList = new ArrayList<>(paths.length);
+        for (TreePath path : paths) {
+            DefaultMutableTreeNode node = (DefaultMutableTreeNode) path.getLastPathComponent();
+            if (node.isRoot()) {
+                // 是根节点
+                return new Selected(base.getRepositoryList(), Collections.emptyList());
+            }
+            Object obj = node.getUserObject();
+            if (node.isLeaf()) {
+                // 是分支
+                Branch b = (Branch) obj;
+                branchList.add(b);
+                continue;
+            }
+            int depth = path.getPathCount();
+            if (depth == 2) {
+                // 是仓库
+                Repository r = (Repository) obj;
+                repositoryList.add(r);
+            }
+        }
+        return new Selected(repositoryList, branchList);
+    }
+
+    /**
+     * 获取已选的树路径
+     *
+     * @return 树路径数组
+     */
+    private TreePath[] getSelectedPaths() {
+        TreePath[] paths = tree.getSelectionPaths();
+        if (ArrayUtils.isEmpty(paths)) {
+            return new TreePath[0];
+        }
+        return paths;
     }
 
     /**
