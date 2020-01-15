@@ -1,6 +1,9 @@
 package cn.gjr.utils;
 
-import com.google.gson.*;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.List;
@@ -11,6 +14,11 @@ import java.util.List;
  * @author GaoJunru
  */
 public final class JsonUtil {
+    /**
+     * gson构造器（序列化时输出null）
+     */
+    private static final GsonBuilder BUILDER = new GsonBuilder().serializeNulls();
+
     private JsonUtil() {
     }
 
@@ -22,8 +30,7 @@ public final class JsonUtil {
      * @return bean对象
      */
     public static <T> T string2Bean(String string, TypeToken<T> token) {
-        Gson gson = new GsonBuilder().create();
-        return gson.fromJson(string, token.getType());
+        return BUILDER.create().fromJson(string, token.getType());
     }
 
     /**
@@ -45,8 +52,7 @@ public final class JsonUtil {
      * @return json数组
      */
     public static <T> JsonArray list2Array(List<T> list, TypeToken<List<T>> token) {
-        Gson gson = new GsonBuilder().create();
-        return gson.toJsonTree(list, token.getType()).getAsJsonArray();
+        return BUILDER.create().toJsonTree(list, token.getType()).getAsJsonArray();
     }
 
     /**
