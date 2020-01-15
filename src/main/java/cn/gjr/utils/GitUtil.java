@@ -76,10 +76,11 @@ public final class GitUtil {
      * @return 命令运行结果
      */
     public static CommandResult rebase(Branch branch) {
+        File dir = branch.getRepository().getDir();
         if (branch.isCurrent()) {
-            return rebase(branch.getDir());
+            return rebase(dir);
         }
-        return rebase(branch.getDir(), branch.getName());
+        return rebase(dir, branch.getName());
     }
 
     /**
@@ -117,7 +118,7 @@ public final class GitUtil {
      * @return 命令运行结果
      */
     public static CommandResult status(Branch branch) {
-        File dir = branch.getDir();
+        File dir = branch.getRepository().getDir();
         if (branch.isCurrent()) {
             return status(dir);
         }
@@ -195,17 +196,17 @@ public final class GitUtil {
     /**
      * 根据目录获取分支列表
      *
-     * @param dir 目录
+     * @param repository 仓库
      * @return 分支列表
      */
-    public static List<Branch> getBranchList(File dir) {
-        String message = branch(dir).getMessage().trim();
+    private static List<Branch> getBranchList(Repository repository) {
+        String message = branch(repository.getDir()).getMessage().trim();
         String[] branches = message.split("\n\n");
         List<Branch> branchList = new ArrayList<>(branches.length);
         for (String branchStr : branches) {
             JsonObject json = JsonUtil.string2Json(branchStr);
             Branch br = new Branch();
-            br.setDir(dir);
+            br.setRepository(repository);
             br.setCurrent(json.get("isCurrent").getAsBoolean());
             br.setName(json.get("name").getAsString());
             br.setUpstream(json.get("upstream").getAsString());
@@ -277,7 +278,7 @@ public final class GitUtil {
      */
     public static void generateRepositoryList(List<Repository> repositoryList) {
         repositoryList.forEach(e -> {
-            List<Branch> branches = getBranchList(e.getDir());
+            List<Branch> branches = getBranchList(e);
             e.setBranchList(branches);
         });
     }

@@ -2,8 +2,6 @@ package cn.gjr.bean;
 
 import lombok.Data;
 
-import java.io.File;
-
 /**
  * 分支
  *
@@ -12,9 +10,9 @@ import java.io.File;
 @Data
 public class Branch {
     /**
-     * 目录
+     * 仓库
      */
-    private File dir;
+    private Repository repository;
     /**
      * 名称
      */
