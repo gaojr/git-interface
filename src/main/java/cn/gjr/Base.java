@@ -83,9 +83,9 @@ class Base {
         // 处理分支
         repositoryList = readConfig();
         GitUtil.generateRepositoryList(repositoryList);
-        // 生成frame
-        JFrame frame = new JFrame("git工具");
-        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        // 生成panel
+        JPanel panel = DynamicTreeDemo.createAndShowGUI(this);
+        JFrame frame = createFrame("git工具", panel, 450, 400);
         frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
@@ -93,15 +93,6 @@ class Base {
                 writeConfig();
             }
         });
-        // 生成panel
-        JPanel panel = DynamicTreeDemo.createAndShowGUI(this);
-        // panel放入frame
-        frame.setContentPane(panel);
-        // 调整大小
-        frame.setPreferredSize(new Dimension(450, 400));
-        // 显示
-        frame.pack();
-        frame.setVisible(true);
     }
 
     /**
@@ -172,5 +163,27 @@ class Base {
             }
         });
         return deduplicate(list);
+    }
+
+    /**
+     * 生成框架
+     *
+     * @param title 标题
+     * @param panel 面板
+     * @param width 宽
+     * @param height 高
+     * @return 框架
+     */
+    public static JFrame createFrame(String title, JPanel panel, int width, int height) {
+        JFrame frame = new JFrame(title);
+        frame.setTitle(title);
+        frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        frame.setPreferredSize(new Dimension(width, height));
+        // panel放入frame
+        frame.setContentPane(panel);
+        // 显示
+        frame.pack();
+        frame.setVisible(true);
+        return frame;
     }
 }
