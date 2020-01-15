@@ -13,6 +13,7 @@ import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
 import javax.swing.tree.*;
 import java.awt.*;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -50,8 +51,27 @@ public class DynamicTree extends JPanel {
      * 增加节点
      */
     void add() {
-        // TODO 增加节点
-        // TODO 同步处理 repositoryList
+        Repository repo = createRepo();
+        if (repo == null) {
+            log.info("添加失败，未选择或者该文件夹不是git仓库");
+            return;
+        }
+        // 增加节点
+        DefaultMutableTreeNode rNode = addObject(null, repo, true);
+        for (Branch branch : repo.getBranchList()) {
+            addObject(rNode, branch, false);
+        }
+        // 同步处理 repositoryList
+        base.getRepositoryList().add(repo);
+    }
+
+    /**
+     * TODO 生成仓库对象
+     *
+     * @return 仓库对象
+     */
+    private Repository createRepo() {
+        return null;
     }
 
     /**
