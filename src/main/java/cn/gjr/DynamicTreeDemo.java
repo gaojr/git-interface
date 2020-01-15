@@ -1,17 +1,13 @@
 package cn.gjr;
 
-import cn.gjr.bean.Branch;
-import cn.gjr.bean.Repository;
 import cn.gjr.constants.Commands;
 import cn.gjr.constants.Titles;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.swing.*;
-import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.List;
 
 /**
  * 动态树 Demo
@@ -20,7 +16,9 @@ import java.util.List;
  */
 @Slf4j
 public class DynamicTreeDemo extends JPanel implements ActionListener {
-
+    /**
+     * 动态树
+     */
     private DynamicTree treePanel;
 
     /**
@@ -42,6 +40,21 @@ public class DynamicTreeDemo extends JPanel implements ActionListener {
         createButtons2();
     }
 
+    /**
+     * 生成并显示界面
+     *
+     * @param base 基类
+     * @return 面板
+     */
+    static JPanel createAndShowGUI(Base base) {
+        return new DynamicTreeDemo(base);
+    }
+
+    /**
+     * 触发动作
+     *
+     * @param event 事件
+     */
     @Override
     public void actionPerformed(ActionEvent event) {
         Commands command = Commands.valueOf(event.getActionCommand());
@@ -62,7 +75,6 @@ public class DynamicTreeDemo extends JPanel implements ActionListener {
                 log.error("Error Command!");
         }
     }
-
 
     /**
      * 生成并添加按钮（拉取、变基）
@@ -108,15 +120,5 @@ public class DynamicTreeDemo extends JPanel implements ActionListener {
         addButton.setActionCommand(command.toString());
         addButton.addActionListener(this);
         return addButton;
-    }
-
-    /**
-     * 生成并显示界面
-     *
-     * @param base 基类
-     * @return 面板
-     */
-    static JPanel createAndShowGUI(Base base) {
-        return new DynamicTreeDemo(base);
     }
 }

@@ -41,6 +41,12 @@ class Base {
     @Setter
     private List<Repository> repositoryList;
 
+    private Base() {
+        // Schedule a job for the event-dispatching thread: creating and showing this application's GUI.
+        // For thread safety, this method should be invoked from the event-dispatching thread.
+        javax.swing.SwingUtilities.invokeLater(this::createAndShowGUI);
+    }
+
     public static void main(String[] args) {
         if (!GitUtil.hasGit()) {
             log.error("未安装git!!");
@@ -49,10 +55,17 @@ class Base {
         new Base();
     }
 
-    private Base() {
-        // Schedule a job for the event-dispatching thread: creating and showing this application's GUI.
-        // For thread safety, this method should be invoked from the event-dispatching thread.
-        javax.swing.SwingUtilities.invokeLater(this::createAndShowGUI);
+    /**
+     * 去重
+     *
+     * @param list 列表
+     * @return 去重后的列表
+     */
+    private static <T> List<T> deduplicate(List<T> list) {
+        if (ObjectUtils.isEmpty(list)) {
+            return Collections.emptyList();
+        }
+        return list.stream().distinct().collect(Collectors.toList());
     }
 
     /**
@@ -172,18 +185,5 @@ class Base {
             }
         });
         return deduplicate(list);
-    }
-
-    /**
-     * 去重
-     *
-     * @param list 列表
-     * @return 去重后的列表
-     */
-    private static <T> List<T> deduplicate(List<T> list) {
-        if (ObjectUtils.isEmpty(list)) {
-            return Collections.emptyList();
-        }
-        return list.stream().distinct().collect(Collectors.toList());
     }
 }
