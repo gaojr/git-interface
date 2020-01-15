@@ -50,7 +50,7 @@ public class Repository {
             return false;
         }
         Repository that = (Repository) o;
-        return Objects.equals(name, that.name) && Objects.equals(path, that.path);
+        return Objects.equals(name, that.name) || Objects.equals(path, that.path);
     }
 
     @Override
