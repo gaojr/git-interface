@@ -182,19 +182,17 @@ public class DynamicTree extends JPanel {
      * @param repositoryList 仓库列表
      */
     void createTree(List<Repository> repositoryList) {
-        // 生成树
         for (Repository repository : repositoryList) {
             addNode(repository);
         }
     }
 
     /**
-     * 添加节点
+     * 增加节点
      *
      * @param repo 仓库
      */
     private void addNode(Repository repo) {
-        // 增加节点
         DefaultMutableTreeNode rNode = addObject(null, repo, true);
         for (Branch branch : repo.getBranchList()) {
             addObject(rNode, branch, false);
