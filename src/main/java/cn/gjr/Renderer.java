@@ -26,6 +26,7 @@ public class Renderer extends DefaultTreeCellRenderer {
     @Override
     public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus) {
         super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
+        // 图标
         DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
         Object obj = node.getUserObject();
         if (GitUtil.isRepository(obj)) {

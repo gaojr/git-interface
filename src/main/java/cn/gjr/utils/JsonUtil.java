@@ -15,7 +15,11 @@ import java.util.List;
  */
 public final class JsonUtil {
     /**
-     * gson构造器（序列化时输出null）
+     * gson构造器
+     * <ul>
+     *     <li>根据Expose注解过滤成员</li>
+     *     <li>序列化时输出null</li>
+     * </ul>
      */
     private static final GsonBuilder BUILDER = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().serializeNulls();
 

@@ -172,6 +172,16 @@ public final class GitUtil {
     }
 
     /**
+     * 是否为分支对象
+     *
+     * @param obj 对象
+     * @return {@code true} 是
+     */
+    public static boolean isBranch(Object obj) {
+        return obj instanceof Branch;
+    }
+
+    /**
      * 判断是否安装git
      *
      * @return {@code true} 已安装
@@ -209,6 +219,28 @@ public final class GitUtil {
     }
 
     /**
+     * 填入修改状态
+     *
+     * @param br 分支
+     * @param track 修改状态
+     */
+    private static void branchTrack(Branch br, String track) {
+        if (StringUtils.isBlank(track)) {
+            return;
+        }
+        String[] tracks = track.split(", ");
+        for (String t : tracks) {
+            if (StringUtils.startsWith(t, "ahead")) {
+                String str = StringUtils.substringAfter(t, "ahead ");
+                br.setAhead(Integer.parseInt(str));
+            } else if (StringUtils.startsWith(t, "behind")) {
+                String str = StringUtils.substringAfter(t, "behind ");
+                br.setBehind(Integer.parseInt(str));
+            }
+        }
+    }
+
+    /**
      * 填入分支状态
      *
      * @param br 分支
@@ -240,44 +272,12 @@ public final class GitUtil {
     }
 
     /**
-     * 填入修改状态
-     *
-     * @param br 分支
-     * @param track 修改状态
-     */
-    private static void branchTrack(Branch br, String track) {
-        if (StringUtils.isBlank(track)) {
-            return;
-        }
-        String[] tracks = track.split(", ");
-        for (String t : tracks) {
-            if (StringUtils.startsWith(t, "ahead")) {
-                String str = StringUtils.substringAfter(t, "ahead ");
-                br.setAhead(Integer.parseInt(str));
-            } else if (StringUtils.startsWith(t, "behind")) {
-                String str = StringUtils.substringAfter(t, "behind ");
-                br.setBehind(Integer.parseInt(str));
-            }
-        }
-    }
-
-    /**
-     * 是否为分支对象
-     *
-     * @param obj 对象
-     * @return {@code true} 是
-     */
-    public static boolean isBranch(Object obj) {
-        return obj instanceof Branch;
-    }
-
-    /**
      * 完善仓库列表
      * TODO 优化，提高速度
      */
     public static void generateRepositoryList(List<Repository> repositoryList) {
         repositoryList.forEach(e -> {
-            List<Branch> branches = GitUtil.getBranchList(e.getDir());
+            List<Branch> branches = getBranchList(e.getDir());
             e.setBranchList(branches);
         });
     }
