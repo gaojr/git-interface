@@ -1,5 +1,6 @@
 package cn.gjr.bean;
 
+import com.google.gson.JsonObject;
 import lombok.Data;
 
 import java.io.File;
@@ -36,11 +37,13 @@ public class Repository extends Config {
             return false;
         }
         Repository that = (Repository) o;
-        return Objects.equals(dir.getPath(), that.dir.getPath());
+        return Objects.equals(getName(), that.getName()) && Objects.equals(dir.getPath(), that.dir.getPath());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(dir.getPath());
+        JsonObject json = new JsonObject();
+        json.addProperty(getName(), dir.getPath());
+        return Objects.hash(json);
     }
 }
