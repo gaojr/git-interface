@@ -30,6 +30,7 @@ public class ChooseFrame extends JPanel implements ActionListener {
 
         tree = dynamicTree;
 
+        // 选择文件
         JFileChooser chooser = new JFileChooser();
         // 只选择文件夹
         chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
@@ -44,6 +45,9 @@ public class ChooseFrame extends JPanel implements ActionListener {
         }
     }
 
+    /**
+     * 显示错误信息
+     */
     private void showError() {
         JPanel panel = new JPanel(new GridLayout(1, 1));
         JLabel nameLabel = new JLabel("选择的文件夹不是仓库！");
@@ -51,6 +55,11 @@ public class ChooseFrame extends JPanel implements ActionListener {
         frame = Base.createFrame("报错", panel, 300, 100);
     }
 
+    /**
+     * 显示选择框
+     *
+     * @param path 路径
+     */
     private void showChoose(String path) {
         // 输入框
         JLabel nameLabel = new JLabel("name: ");
