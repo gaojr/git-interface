@@ -69,10 +69,10 @@ public class DynamicTree extends JPanel {
      */
     void remove() {
         int count = tree.getSelectionCount();
-        if (count != 1) {
+        TreePath currentSelection = tree.getSelectionPath();
+        if (count != 1 || currentSelection == null) {
             return;
         }
-        TreePath currentSelection = tree.getSelectionPath();
         // 有选择的节点
         DefaultMutableTreeNode currentNode = (DefaultMutableTreeNode) (currentSelection.getLastPathComponent());
         if (currentNode.isRoot()) {
