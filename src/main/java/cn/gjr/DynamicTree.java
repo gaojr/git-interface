@@ -13,6 +13,8 @@ import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
 import javax.swing.tree.*;
 import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -46,6 +48,11 @@ public class DynamicTree extends JPanel {
         tree.setEditable(false);
         // 可多选
         tree.getSelectionModel().setSelectionMode(TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION);
+        // 可拖动
+        tree.setDropMode(DropMode.ON);
+        tree.setDragEnabled(true);
+        tree.setTransferHandler(new DragHandler());
+        tree.addMouseListener(new DragListener());
 
         JScrollPane scrollPane = new JScrollPane(tree);
         add(scrollPane);
@@ -250,5 +257,60 @@ public class DynamicTree extends JPanel {
         public void treeStructureChanged(TreeModelEvent e) {
             // do nothing
         }
+    }
+
+    class DragListener implements MouseListener {
+        /**
+         * 节点路径
+         */
+        private TreePath nodePath;
+
+        @Override
+        public void mousePressed(MouseEvent e) {
+            // 按下鼠标时候获得被拖动的节点
+            TreePath tp = tree.getPathForLocation(e.getX(), e.getY());
+            if (tp != null) {
+                nodePath = tp;
+            }
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent e) {
+            // 鼠标松开时获得需要拖到哪个父节点
+            TreePath toPath = tree.getPathForLocation(e.getX(), e.getY());
+            if (toPath == null || nodePath == null || toPath == nodePath) {
+                return;
+            }
+            // 阻止向子节点拖动
+            if (nodePath.isDescendant(toPath)) {
+                JOptionPane.showMessageDialog(tree, "无法移动！", "非法操作", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            DefaultMutableTreeNode fromNode = (DefaultMutableTreeNode) nodePath.getLastPathComponent();
+            DefaultMutableTreeNode toNode = (DefaultMutableTreeNode) toPath.getLastPathComponent();
+            DefaultMutableTreeNode parent = (DefaultMutableTreeNode) toNode.getParent();
+            int index = parent.getIndex(toNode);
+            parent.insert(fromNode, index);
+            nodePath = null;
+            treeModel.reload();
+        }
+
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            // do nothing
+        }
+
+        @Override
+        public void mouseEntered(MouseEvent e) {
+            // do nothing
+        }
+
+        @Override
+        public void mouseExited(MouseEvent e) {
+            // do nothing
+        }
+    }
+
+    private static class DragHandler extends TransferHandler {
     }
 }
