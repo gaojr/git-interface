@@ -24,7 +24,7 @@ import java.util.List;
  */
 @Slf4j
 public class DynamicTree extends JPanel {
-    private Base base;
+    private transient Base base;
     private DefaultMutableTreeNode rootNode;
     private DefaultTreeModel treeModel;
     private JTree tree;
@@ -38,9 +38,14 @@ public class DynamicTree extends JPanel {
         treeModel.addTreeModelListener(new Listener());
 
         tree = new JTree(treeModel);
-        tree.setEditable(true);
-        tree.getSelectionModel().setSelectionMode(TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION);
+        // 根节点不可见
+        tree.setRootVisible(false);
+        // 显示树延伸线
         tree.setShowsRootHandles(true);
+        // 不可编辑
+        tree.setEditable(false);
+        // 可多选
+        tree.getSelectionModel().setSelectionMode(TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION);
 
         JScrollPane scrollPane = new JScrollPane(tree);
         add(scrollPane);
@@ -75,10 +80,6 @@ public class DynamicTree extends JPanel {
         }
         // 有选择的节点
         DefaultMutableTreeNode currentNode = (DefaultMutableTreeNode) (currentSelection.getLastPathComponent());
-        if (currentNode.isRoot()) {
-            // 是根节点
-            return;
-        }
         Object obj = currentNode.getUserObject();
         if (GitUtil.isBranch(obj)) {
             // 是分支对象
@@ -229,7 +230,7 @@ public class DynamicTree extends JPanel {
         tree.setCellRenderer(render);
     }
 
-    class Listener implements TreeModelListener {
+    static class Listener implements TreeModelListener {
         @Override
         public void treeNodesInserted(TreeModelEvent e) {
             // do nothing
