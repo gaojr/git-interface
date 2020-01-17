@@ -86,11 +86,10 @@ public class DynamicTree extends JPanel {
         }
         treeModel.removeNodeFromParent(currentNode);
         // 同步处理 repositoryList
-        List<Repository> repositoryList = base.getRepositoryList();
         if (GitUtil.isRepository(obj)) {
             // 删除仓库
             Repository rep = (Repository) obj;
-            repositoryList.remove(rep);
+            base.getRepositoryList().remove(rep);
         }
     }
 
@@ -233,23 +232,22 @@ public class DynamicTree extends JPanel {
     class Listener implements TreeModelListener {
         @Override
         public void treeNodesInserted(TreeModelEvent e) {
-            // TODO ?
-
+            // do nothing
         }
 
         @Override
         public void treeNodesRemoved(TreeModelEvent e) {
-            // TODO ?
+            // do nothing
         }
 
         @Override
         public void treeNodesChanged(TreeModelEvent e) {
-            // TODO ?
+            // do nothing
         }
 
         @Override
         public void treeStructureChanged(TreeModelEvent e) {
-            // TODO ?
+            // do nothing
         }
     }
 }
