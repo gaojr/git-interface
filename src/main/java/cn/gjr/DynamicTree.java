@@ -35,7 +35,7 @@ public class DynamicTree extends JPanel {
 
         rootNode = new DefaultMutableTreeNode("仓库");
         treeModel = new DefaultTreeModel(rootNode);
-        treeModel.addTreeModelListener(new Listener());
+        treeModel.addTreeModelListener(new NodeListener());
 
         tree = new JTree(treeModel);
         // 根节点不可见
@@ -230,7 +230,7 @@ public class DynamicTree extends JPanel {
         tree.setCellRenderer(render);
     }
 
-    static class Listener implements TreeModelListener {
+    static class NodeListener implements TreeModelListener {
         @Override
         public void treeNodesInserted(TreeModelEvent e) {
             // do nothing
