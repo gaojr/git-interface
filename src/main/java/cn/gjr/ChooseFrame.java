@@ -49,10 +49,7 @@ public class ChooseFrame extends JPanel implements ActionListener {
      * 显示错误信息
      */
     private void showError() {
-        JPanel panel = new JPanel(new GridLayout(1, 1));
-        JLabel nameLabel = new JLabel("选择的文件夹不是仓库！");
-        panel.add(nameLabel);
-        frame = Base.createFrame("报错", panel, 300, 100);
+        JOptionPane.showMessageDialog(tree, "选择的文件夹不是仓库！", "报错", JOptionPane.ERROR_MESSAGE);
     }
 
     /**
