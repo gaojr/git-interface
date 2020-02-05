@@ -33,7 +33,7 @@ public class Repository {
     /**
      * 分支
      */
-    @Expose(serialize = false)
+    @Expose
     private List<Branch> branchList;
 
     @Override

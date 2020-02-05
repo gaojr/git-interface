@@ -1,5 +1,6 @@
 package cn.gjr.bean;
 
+import com.google.gson.annotations.Expose;
 import lombok.Data;
 
 import java.util.Objects;
@@ -14,42 +15,52 @@ public class Branch {
     /**
      * 仓库
      */
+    @Expose(serialize = false)
     private Repository repository;
     /**
      * 名称
      */
+    @Expose
     private String name;
     /**
      * 远端
      */
+    @Expose
     private String upstream;
     /**
      * 是否当前分支
      */
+    @Expose
     private boolean isCurrent = false;
     /**
      * 能否直接变基
      */
+    @Expose
     private boolean canRebase = true;
     /**
      * 领先提交数量
      */
+    @Expose
     private int ahead = 0;
     /**
      * 落后提交数量
      */
+    @Expose
     private int behind = 0;
     /**
      * 新增文件数量
      */
+    @Expose
     private int add = 0;
     /**
      * 修改文件数量
      */
+    @Expose
     private int modify = 0;
     /**
      * 删除文件数量
      */
+    @Expose
     private int delete = 0;
 
     @Override

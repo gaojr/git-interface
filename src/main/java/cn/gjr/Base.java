@@ -104,7 +104,7 @@ class Base {
         }
         // 处理分支
         repositoryList = readConfig();
-        GitUtil.generateRepositoryList(repositoryList);
+        // GitUtil.generateRepositoryList(repositoryList); // 启动时先不拉取仓库
         // 生成panel
         JPanel panel = DynamicTreeDemo.createAndShowGUI(this);
         JFrame frame = createFrame("git工具", panel, 450, 400);
@@ -173,7 +173,6 @@ class Base {
      * @return 校正后的仓库list
      */
     private List<Repository> config2Repository(List<Repository> configList) {
-        List<Repository> list = new ArrayList<>(configList.size());
         configList.stream().filter(e -> StringUtils.isNoneBlank(e.getName(), e.getPath())).forEach(e -> {
             // 转为系统路径
             String path = FilenameUtils.separatorsToSystem(e.getPath());
@@ -181,9 +180,11 @@ class Base {
                 File dir = new File(path);
                 e.setDir(dir);
                 e.setPath(dir.getPath());
-                list.add(e);
+                e.getBranchList().forEach(b -> {
+                    b.setRepository(e);
+                });
             }
         });
-        return deduplicate(list);
+        return deduplicate(configList);
     }
 }
