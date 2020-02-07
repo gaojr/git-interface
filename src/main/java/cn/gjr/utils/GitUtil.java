@@ -3,6 +3,8 @@ package cn.gjr.utils;
 import cn.gjr.bean.Branch;
 import cn.gjr.bean.CommandResult;
 import cn.gjr.bean.Repository;
+import cn.gjr.task.BranchTask;
+import cn.gjr.task.Pool;
 import com.google.gson.JsonObject;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -274,12 +276,13 @@ public final class GitUtil {
 
     /**
      * 完善仓库列表
-     * TODO 优化，提高速度
      */
     public static void generateRepositoryList(List<Repository> repositoryList) {
+        Pool pool = new Pool(repositoryList.size());
         repositoryList.forEach(e -> {
-            List<Branch> branches = getBranchList(e);
-            e.setBranchList(branches);
+            BranchTask task = new BranchTask(e);
+            pool.add(task);
         });
+        pool.run();
     }
 }

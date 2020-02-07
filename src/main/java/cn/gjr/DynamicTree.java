@@ -1,9 +1,11 @@
 package cn.gjr;
 
 import cn.gjr.bean.Branch;
-import cn.gjr.bean.CommandResult;
 import cn.gjr.bean.Repository;
 import cn.gjr.bean.Selected;
+import cn.gjr.task.FetchTask;
+import cn.gjr.task.Pool;
+import cn.gjr.task.RebaseTask;
 import cn.gjr.utils.GitUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ArrayUtils;
@@ -18,6 +20,7 @@ import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 /**
  * 动态树
@@ -106,10 +109,13 @@ public class DynamicTree extends JPanel {
      */
     void fetch() {
         Selected selection = getSelection();
-        selection.getRepositorySet().forEach(e -> {
-            CommandResult result = GitUtil.fetch(e.getDir());
-            log.info(e.getName() + " fetch " + result.isSuccess());
+        Set<Repository> repositorySet = selection.getRepositorySet();
+        Pool pool = new Pool(repositorySet.size());
+        repositorySet.forEach(e -> {
+            FetchTask task = new FetchTask(e);
+            pool.add(task);
         });
+        pool.run();
         reloadTree();
     }
 
@@ -118,10 +124,13 @@ public class DynamicTree extends JPanel {
      */
     void rebase() {
         Selected selection = getSelection();
-        selection.getBranchSet().forEach(e -> {
-            CommandResult result = GitUtil.rebase(e);
-            log.info(e.getName() + " rebase " + result.isSuccess());
+        Set<Branch> branchSet = selection.getBranchSet();
+        Pool pool = new Pool(branchSet.size());
+        branchSet.forEach(e -> {
+            RebaseTask task = new RebaseTask(e);
+            pool.add(task);
         });
+        pool.run();
         reloadTree();
     }
 
@@ -259,6 +268,9 @@ public class DynamicTree extends JPanel {
         }
     }
 
+    private static class DragHandler extends TransferHandler {
+    }
+
     class DragListener implements MouseListener {
         /**
          * 节点路径
@@ -309,8 +321,5 @@ public class DynamicTree extends JPanel {
         public void mouseExited(MouseEvent e) {
             // do nothing
         }
-    }
-
-    private static class DragHandler extends TransferHandler {
     }
 }
