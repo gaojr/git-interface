@@ -178,9 +178,7 @@ class Base {
                 File dir = new File(path);
                 e.setDir(dir);
                 e.setPath(dir.getPath());
-                e.getBranchList().forEach(b -> {
-                    b.setRepository(e);
-                });
+                e.getBranchList().forEach(b -> b.setRepository(e));
             }
         });
         return deduplicate(configList);

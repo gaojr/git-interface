@@ -117,10 +117,7 @@ public class DynamicTree extends JPanel {
             return;
         }
         Pool pool = new Pool(repositorySet.size());
-        repositorySet.forEach(e -> {
-            FetchTask task = new FetchTask(e);
-            pool.add(task);
-        });
+        repositorySet.stream().map(FetchTask::new).forEach(pool::add);
         pool.run();
         reloadTree();
     }
@@ -135,10 +132,7 @@ public class DynamicTree extends JPanel {
             return;
         }
         Pool pool = new Pool(branchSet.size());
-        branchSet.forEach(e -> {
-            RebaseTask task = new RebaseTask(e);
-            pool.add(task);
-        });
+        branchSet.stream().map(RebaseTask::new).forEach(pool::add);
         pool.run();
         reloadTree();
     }
