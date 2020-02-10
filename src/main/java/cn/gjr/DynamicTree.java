@@ -74,9 +74,10 @@ public class DynamicTree extends JPanel {
      * @param repo 仓库
      */
     void add(Repository repo) {
-        addNode(repo);
         // 同步处理 repositoryList
         base.getRepositoryList().add(repo);
+        // 增加节点
+        addNode(repo);
     }
 
     /**
@@ -95,12 +96,13 @@ public class DynamicTree extends JPanel {
             // 是分支对象
             return;
         }
-        treeModel.removeNodeFromParent(currentNode);
-        // 同步处理 repositoryList
+        // 只删除仓库
         if (GitUtil.isRepository(obj)) {
-            // 删除仓库
             Repository rep = (Repository) obj;
+            // 同步处理 repositoryList
             base.getRepositoryList().remove(rep);
+            // 移除节点
+            treeModel.removeNodeFromParent(currentNode);
         }
     }
 
