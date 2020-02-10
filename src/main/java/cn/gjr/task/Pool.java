@@ -16,8 +16,7 @@ public class Pool {
     ExecutorService pool;
 
     public Pool(int size) {
-        int corePoolSize = 1;
-        pool = new ThreadPoolExecutor(corePoolSize, size, 0, TimeUnit.SECONDS,
+        pool = new ThreadPoolExecutor(size, size, 0, TimeUnit.SECONDS,
                 new ArrayBlockingQueue<>(512), // 使用有界队列，避免OOM
                 new ThreadPoolExecutor.DiscardPolicy() // 什么也不做，直接忽略
         );
