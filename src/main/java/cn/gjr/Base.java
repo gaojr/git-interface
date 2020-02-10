@@ -23,7 +23,6 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -68,7 +67,7 @@ class Base {
      */
     private static <T> List<T> deduplicate(List<T> list) {
         if (ObjectUtils.isEmpty(list)) {
-            return Collections.emptyList();
+            return new ArrayList<>(10);
         }
         return list.stream().distinct().collect(Collectors.toList());
     }
@@ -104,7 +103,6 @@ class Base {
         }
         // 处理分支
         repositoryList = readConfig();
-        // GitUtil.generateRepositoryList(repositoryList); // 启动时先不拉取仓库
         // 生成panel
         JPanel panel = DynamicTreeDemo.createAndShowGUI(this);
         JFrame frame = createFrame("git工具", panel, 450, 400);
@@ -163,7 +161,7 @@ class Base {
         } catch (IOException e) {
             log.error("Read Config Error!", e);
         }
-        return Collections.emptyList();
+        return new ArrayList<>(10);
     }
 
     /**
