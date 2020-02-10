@@ -8,13 +8,21 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
- * 线程池
+ * 线程池类
  *
  * @author GaoJunru
  */
 public class Pool {
+    /**
+     * 线程池
+     */
     ExecutorService pool;
 
+    /**
+     * 构造函数
+     *
+     * @param size 大小
+     */
     public Pool(int size) {
         pool = new ThreadPoolExecutor(size, size, 0, TimeUnit.SECONDS,
                 new ArrayBlockingQueue<>(512), // 使用有界队列，避免OOM
@@ -22,10 +30,18 @@ public class Pool {
         );
     }
 
+    /**
+     * 添加任务
+     *
+     * @param task 任务
+     */
     public void add(BaseTask task) {
         pool.execute(task);
     }
 
+    /**
+     * 运行任务
+     */
     @SneakyThrows(InterruptedException.class)
     public void run() {
         pool.shutdown();

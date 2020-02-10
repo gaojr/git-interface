@@ -12,6 +12,9 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class RebaseTask extends BaseTask {
+    /**
+     * 分支
+     */
     Branch branch;
 
     public RebaseTask(Branch branch) {

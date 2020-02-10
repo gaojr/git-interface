@@ -31,8 +31,17 @@ import java.util.Set;
 @Slf4j
 public class DynamicTree extends JPanel {
     private transient Base base;
+    /**
+     * 根节点
+     */
     private DefaultMutableTreeNode rootNode;
+    /**
+     * 树模型
+     */
     private DefaultTreeModel treeModel;
+    /**
+     * 树
+     */
     private JTree tree;
 
     DynamicTree(Base base) {
@@ -82,12 +91,13 @@ public class DynamicTree extends JPanel {
     }
 
     /**
-     * 移除节点
+     * 移除
      */
     void remove() {
         int count = tree.getSelectionCount();
         TreePath currentSelection = tree.getSelectionPath();
         if (count != 1 || currentSelection == null) {
+            // TODO 提示
             return;
         }
         // 有选择的节点
@@ -95,6 +105,7 @@ public class DynamicTree extends JPanel {
         Object obj = currentNode.getUserObject();
         if (GitUtil.isBranch(obj)) {
             // 是分支对象
+            // TODO 提示
             return;
         }
         // 只删除仓库
