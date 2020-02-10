@@ -8,6 +8,7 @@ import cn.gjr.task.Pool;
 import cn.gjr.task.RebaseTask;
 import cn.gjr.utils.GitUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 
 import javax.swing.*;
@@ -112,6 +113,9 @@ public class DynamicTree extends JPanel {
     void fetch() {
         Selected selection = getSelection();
         Set<Repository> repositorySet = selection.getRepositorySet();
+        if (CollectionUtils.isEmpty(repositorySet)) {
+            return;
+        }
         Pool pool = new Pool(repositorySet.size());
         repositorySet.forEach(e -> {
             FetchTask task = new FetchTask(e);
@@ -127,6 +131,9 @@ public class DynamicTree extends JPanel {
     void rebase() {
         Selected selection = getSelection();
         Set<Branch> branchSet = selection.getBranchSet();
+        if (CollectionUtils.isEmpty(branchSet)) {
+            return;
+        }
         Pool pool = new Pool(branchSet.size());
         branchSet.forEach(e -> {
             RebaseTask task = new RebaseTask(e);
