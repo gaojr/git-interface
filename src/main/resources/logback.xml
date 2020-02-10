@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration debug="false" scan="false">
+    <!-- 日志位置 -->
+    <property name="log.path" value="logs"/>
     <!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符-->
     <property name="log.pattern" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n"/>
 
@@ -24,10 +26,15 @@
         <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
             <MaxFileSize>10MB</MaxFileSize>
         </triggeringPolicy>
+        <!-- 过滤 -->
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <!-- 在日志配置级别的基础上过滤掉info级别以下的日志 -->
+            <level>ERROR</level>
+        </filter>
     </appender>
 
-    <!-- 日志 -->
-    <root level="info">
+    <!-- 日志配置级别 -->
+    <root level="INFO">
         <!-- 输出控制台 -->
         <appender-ref ref="console"/>
         <!-- 输出文件 -->
