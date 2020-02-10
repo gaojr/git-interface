@@ -42,7 +42,9 @@ public final class GitUtil {
      */
     public static CommandResult checkout(File dir, String branchName) {
         String command = "git checkout " + branchName;
-        return CommandUtil.run(command, dir);
+        CommandResult result = CommandUtil.run(command, dir);
+        logInfo(branchName, "checkout", result.isSuccess());
+        return result;
     }
 
     /**
@@ -79,10 +81,9 @@ public final class GitUtil {
      */
     public static CommandResult rebase(Branch branch) {
         File dir = branch.getRepository().getDir();
-        if (branch.isCurrent()) {
-            return rebase(dir);
-        }
-        return rebase(dir, branch.getName());
+        CommandResult result = branch.isCurrent() ? rebase(dir) : rebase(dir, branch.getName());
+        logInfo(branch.getName(), "rebase", result.isSuccess());
+        return result;
     }
 
     /**
@@ -284,5 +285,16 @@ public final class GitUtil {
             pool.add(task);
         });
         pool.run();
+    }
+
+    /**
+     * 打印日志
+     *
+     * @param name 对象名
+     * @param command 命令
+     * @param isSuccess 是否成功
+     */
+    private static void logInfo(String name, String command, boolean isSuccess) {
+        log.info("{} {} {}", name, command, isSuccess ? "success" : "failed");
     }
 }

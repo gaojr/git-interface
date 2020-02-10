@@ -1,7 +1,6 @@
 package cn.gjr.task;
 
 import cn.gjr.bean.Branch;
-import cn.gjr.bean.CommandResult;
 import cn.gjr.utils.GitUtil;
 import lombok.extern.slf4j.Slf4j;
 
@@ -23,7 +22,6 @@ public class RebaseTask extends BaseTask {
 
     @Override
     public void run() {
-        CommandResult result = GitUtil.rebase(branch);
-        log.info(branch.getName() + " rebase " + result.isSuccess());
+        GitUtil.rebase(branch);
     }
 }

@@ -1,6 +1,5 @@
 package cn.gjr.task;
 
-import cn.gjr.bean.CommandResult;
 import cn.gjr.bean.Repository;
 import cn.gjr.utils.GitUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +17,6 @@ public class FetchTask extends BaseTask {
 
     @Override
     public void run() {
-        CommandResult result = GitUtil.fetch(repository.getDir());
-        log.info(repository.getName() + " fetch " + result.isSuccess());
+        GitUtil.fetch(repository.getDir());
     }
 }
