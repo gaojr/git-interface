@@ -16,6 +16,10 @@ public enum Commands {
      */
     FETCH("fetch"),
     /**
+     * 增加-分组
+     */
+    GROUP("group"),
+    /**
      * 变基
      */
     REBASE("rebase"),

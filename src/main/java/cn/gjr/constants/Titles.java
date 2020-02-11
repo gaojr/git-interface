@@ -12,6 +12,10 @@ import lombok.Getter;
 @Getter
 public enum Titles {
     /**
+     * 增加-分组
+     */
+    ADD_GROUP("+分组"),
+    /**
      * 增加-仓库
      */
     ADD_REPO("+仓库"),

@@ -16,6 +16,11 @@ import java.util.Objects;
 @Data
 public class Repository {
     /**
+     * 分组
+     */
+    @Expose
+    private String group;
+    /**
      * 名称
      */
     @Expose
