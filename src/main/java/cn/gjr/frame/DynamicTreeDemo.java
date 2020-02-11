@@ -40,6 +40,7 @@ public class DynamicTreeDemo extends JPanel implements ActionListener {
         createButtons1();
         add(treePanel, BorderLayout.CENTER);
         createButtons2();
+        treePanel.expandTree();
     }
 
     /**

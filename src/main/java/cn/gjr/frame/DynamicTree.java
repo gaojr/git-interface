@@ -207,6 +207,7 @@ public class DynamicTree extends JPanel {
         createTree(base.getRepositoryList());
         // 刷新树
         treeModel.reload();
+        expandTree();
     }
 
     /**
@@ -261,6 +262,14 @@ public class DynamicTree extends JPanel {
      */
     void setRenderer(TreeCellRenderer render) {
         tree.setCellRenderer(render);
+    }
+
+    /**
+     * 展开到叶子节点
+     */
+    public void expandTree() {
+        int rowCount = tree.getRowCount();
+        tree.expandRow(rowCount - 1);
     }
 
     static class NodeListener implements TreeModelListener {
