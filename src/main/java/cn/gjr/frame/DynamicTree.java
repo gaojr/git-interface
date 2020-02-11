@@ -85,11 +85,12 @@ public class DynamicTree extends JPanel {
     }
 
     /**
-     * TODO 增加分组
+     * 增加分组
      */
     void addGroup() {
-        String groupName = "";
-        addObject(null, groupName, true);
+        // TODO 获取分组名称
+        String groupName = "分组";
+        addObject(rootNode, groupName, true);
     }
 
     /**
@@ -350,10 +351,22 @@ public class DynamicTree extends JPanel {
                 return;
             }
             DefaultMutableTreeNode fromNode = (DefaultMutableTreeNode) nodePath.getLastPathComponent();
+            int fromDepth = nodePath.getPathCount();
+            if (fromDepth == 4) {
+                // 不能移动分支节点
+                JOptionPane.showMessageDialog(tree, "无法移动！", "非法操作", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
             DefaultMutableTreeNode toNode = (DefaultMutableTreeNode) toPath.getLastPathComponent();
-            DefaultMutableTreeNode parent = (DefaultMutableTreeNode) toNode.getParent();
-            int index = parent.getIndex(toNode);
-            parent.insert(fromNode, index);
+            int toDepth = toPath.getPathCount();
+            if (toDepth < fromDepth) {
+                toNode.add(fromNode);
+            } else if (toDepth == fromDepth) {
+                // 同级移动
+                DefaultMutableTreeNode parent = (DefaultMutableTreeNode) toNode.getParent();
+                int index = parent.getIndex(toNode);
+                parent.insert(fromNode, index);
+            }
             nodePath = null;
             treeModel.reload();
         }
