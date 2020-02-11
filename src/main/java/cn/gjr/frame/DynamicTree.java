@@ -73,9 +73,9 @@ public class DynamicTree extends JPanel {
     }
 
     /**
-     * 增加节点
+     * 增加仓库节点
      */
-    void add() {
+    void addRepo() {
         new ChooseFrame(this);
     }
 
@@ -84,7 +84,7 @@ public class DynamicTree extends JPanel {
      *
      * @param repo 仓库
      */
-    void add(Repository repo) {
+    void addRepo(Repository repo) {
         // 同步处理 repositoryList
         base.getRepositoryList().add(repo);
         // 增加节点

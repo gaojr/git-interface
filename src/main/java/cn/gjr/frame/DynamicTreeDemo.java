@@ -62,7 +62,7 @@ public class DynamicTreeDemo extends JPanel implements ActionListener {
         Commands command = Commands.valueOf(event.getActionCommand());
         switch (command) {
             case REPO:
-                treePanel.add();
+                treePanel.addRepo();
                 break;
             case REMOVE:
                 treePanel.remove();

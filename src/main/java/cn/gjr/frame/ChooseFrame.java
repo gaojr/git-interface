@@ -83,7 +83,7 @@ public class ChooseFrame extends JPanel implements ActionListener {
             repo.setDir(new File(path));
             List<Branch> branchList = GitUtil.getBranchList(repo);
             repo.setBranchList(branchList);
-            tree.add(repo);
+            tree.addRepo(repo);
             frame.dispose();
         }
     }
