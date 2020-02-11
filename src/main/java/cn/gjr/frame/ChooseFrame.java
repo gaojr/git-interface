@@ -1,5 +1,6 @@
-package cn.gjr;
+package cn.gjr.frame;
 
+import cn.gjr.Base;
 import cn.gjr.bean.Branch;
 import cn.gjr.bean.Repository;
 import cn.gjr.constants.Commands;

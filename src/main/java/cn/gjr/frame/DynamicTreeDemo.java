@@ -1,5 +1,7 @@
-package cn.gjr;
+package cn.gjr.frame;
 
+import cn.gjr.Base;
+import cn.gjr.Renderer;
 import cn.gjr.constants.Commands;
 import cn.gjr.constants.Titles;
 import lombok.extern.slf4j.Slf4j;
@@ -46,7 +48,7 @@ public class DynamicTreeDemo extends JPanel implements ActionListener {
      * @param base 基类
      * @return 面板
      */
-    static JPanel createAndShowGUI(Base base) {
+    public static JPanel createAndShowGUI(Base base) {
         return new DynamicTreeDemo(base);
     }
 

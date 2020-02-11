@@ -1,6 +1,7 @@
 package cn.gjr;
 
 import cn.gjr.bean.Repository;
+import cn.gjr.frame.DynamicTreeDemo;
 import cn.gjr.utils.FileUtil;
 import cn.gjr.utils.GitUtil;
 import cn.gjr.utils.JsonUtil;
@@ -32,7 +33,7 @@ import java.util.stream.Collectors;
  * @author GaoJunru
  */
 @Slf4j
-class Base {
+public class Base {
     /**
      * 配置文件
      */
