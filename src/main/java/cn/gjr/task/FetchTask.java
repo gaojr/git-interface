@@ -17,6 +17,6 @@ public class FetchTask extends BaseTask {
 
     @Override
     public void run() {
-        GitUtil.fetch(repository.getDir());
+        GitUtil.fetch(repository);
     }
 }

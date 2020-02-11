@@ -50,27 +50,31 @@ public final class GitUtil {
     /**
      * 查看分支状态
      *
-     * @param dir 目录
+     * @param repo 仓库
      * @return 命令运行结果
      */
-    public static CommandResult branch(File dir) {
+    public static CommandResult branch(Repository repo) {
         String command = "git branch --format=\"{" +
                 "\\\"name\\\":\\\"%(refname:short)\\\"," +
                 "\\\"upstream\\\":\\\"%(upstream:short)\\\"," +
                 "\\\"isCurrent\\\":\"%(if)%(HEAD)%(then)true%(else)false%(end)\"," +
                 "\\\"track\\\":\\\"%(upstream:track,nobracket)\\\"}%0a\"";
-        return CommandUtil.run(command, dir);
+        CommandResult result = CommandUtil.run(command, repo.getDir());
+        logInfo(repo.getName(), "branch", result.isSuccess());
+        return result;
     }
 
     /**
      * 拉取
      *
-     * @param dir 目录
+     * @param repo 仓库
      * @return 命令运行结果
      */
-    public static CommandResult fetch(File dir) {
+    public static CommandResult fetch(Repository repo) {
         String command = "git fetch --all --prune";
-        return CommandUtil.run(command, dir);
+        CommandResult result = CommandUtil.run(command, repo.getDir());
+        logInfo(repo.getName(), "fetch", result.isSuccess());
+        return result;
     }
 
     /**
@@ -203,7 +207,7 @@ public final class GitUtil {
      * @return 分支列表
      */
     public static List<Branch> getBranchList(Repository repository) {
-        String message = branch(repository.getDir()).getMessage().trim();
+        String message = branch(repository).getMessage().trim();
         String[] branches = message.split("\n\n");
         List<Branch> branchList = new ArrayList<>(branches.length);
         for (String branchStr : branches) {
@@ -295,6 +299,6 @@ public final class GitUtil {
      * @param isSuccess 是否成功
      */
     private static void logInfo(String name, String command, boolean isSuccess) {
-        log.info("{} {} {}", name, command, isSuccess ? "success" : "failed");
+        log.info("{} [{}] {}", name, command, isSuccess ? "success" : "failed");
     }
 }
