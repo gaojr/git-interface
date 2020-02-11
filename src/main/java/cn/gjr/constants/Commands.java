@@ -12,10 +12,6 @@ import lombok.Getter;
 @Getter
 public enum Commands {
     /**
-     * 增加
-     */
-    ADD("add"),
-    /**
      * 获取
      */
     FETCH("fetch"),
@@ -27,6 +23,10 @@ public enum Commands {
      * 移除
      */
     REMOVE("remove"),
+    /**
+     * 增加-仓库
+     */
+    REPO("repo"),
     /**
      * 保存
      */

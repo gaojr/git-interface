@@ -61,7 +61,7 @@ public class DynamicTreeDemo extends JPanel implements ActionListener {
     public void actionPerformed(ActionEvent event) {
         Commands command = Commands.valueOf(event.getActionCommand());
         switch (command) {
-            case ADD:
+            case REPO:
                 treePanel.add();
                 break;
             case REMOVE:
@@ -99,7 +99,7 @@ public class DynamicTreeDemo extends JPanel implements ActionListener {
      */
     private void createButtons2() {
         // 新增按钮 = 新增仓库
-        JButton addButton = createButton(Titles.ADD, Commands.ADD);
+        JButton addButton = createButton(Titles.ADD_REPO, Commands.REPO);
         // 移除按钮 = 移除仓库
         JButton removeButton = createButton(Titles.REMOVE, Commands.REMOVE);
 

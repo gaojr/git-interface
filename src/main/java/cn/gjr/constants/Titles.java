@@ -12,9 +12,9 @@ import lombok.Getter;
 @Getter
 public enum Titles {
     /**
-     * 增加
+     * 增加-仓库
      */
-    ADD("Add"),
+    ADD_REPO("+仓库"),
     /**
      * 获取
      */
@@ -26,11 +26,11 @@ public enum Titles {
     /**
      * 移除
      */
-    REMOVE("Remove"),
+    REMOVE("-"),
     /**
      * 保存
      */
-    SAVE("Save");
+    SAVE("保存");
 
     /**
      * 标题
