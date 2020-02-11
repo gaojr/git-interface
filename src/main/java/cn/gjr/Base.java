@@ -35,9 +35,9 @@ import java.util.stream.Collectors;
 @Slf4j
 public class Base {
     /**
-     * 配置文件
+     * 缓存文件-仓库
      */
-    private File configFile;
+    private File repositoryFile;
 
     /**
      * 仓库列表
@@ -123,8 +123,8 @@ public class Base {
      */
     private boolean initConfigFile() {
         try {
-            URL url = Base.class.getResource("/config.json");
-            configFile = new File(url.toURI());
+            URL url = Base.class.getResource("/cache/repository.json");
+            repositoryFile = new File(url.toURI());
         } catch (URISyntaxException e) {
             log.error("获取配置文件失败！", e);
             return true;
@@ -140,7 +140,7 @@ public class Base {
         };
         JsonArray array = JsonUtil.list2Array(repositoryList, typeToken);
         String output = JsonUtil.array2String(array);
-        try (FileOutputStream outputStream = new FileOutputStream(configFile)) {
+        try (FileOutputStream outputStream = new FileOutputStream(repositoryFile)) {
             IOUtils.write(output, outputStream, StandardCharsets.UTF_8);
         } catch (IOException e) {
             log.error("Write Config Error!", e);
@@ -153,7 +153,7 @@ public class Base {
      * @return 仓库list
      */
     private List<Repository> readConfig() {
-        try (InputStream inputStream = new FileInputStream(configFile)) {
+        try (InputStream inputStream = new FileInputStream(repositoryFile)) {
             String config = IOUtils.toString(inputStream, StandardCharsets.UTF_8);
             TypeToken<ArrayList<Repository>> typeToken = new TypeToken<ArrayList<Repository>>() {
             };
