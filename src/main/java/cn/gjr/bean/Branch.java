@@ -33,11 +33,6 @@ public class Branch {
     @Expose
     private boolean isCurrent = false;
     /**
-     * 能否直接变基
-     */
-    @Expose
-    private boolean canRebase = true;
-    /**
      * 领先提交数量
      */
     @Expose
@@ -47,25 +42,10 @@ public class Branch {
      */
     @Expose
     private int behind = 0;
-    /**
-     * 新增文件数量
-     */
-    @Expose
-    private int add = 0;
-    /**
-     * 修改文件数量
-     */
-    @Expose
-    private int modify = 0;
-    /**
-     * 删除文件数量
-     */
-    @Expose
-    private int delete = 0;
 
     @Override
     public String toString() {
-        return String.format("%s%s[%s] ↑%d↓%d+%d~%d-%d", isCurrent ? "*" : " ", name, upstream, ahead, behind, add, modify, delete);
+        return String.format("%s%s[%s] ↑%d↓%d", isCurrent ? "*" : " ", name, upstream, ahead, behind);
     }
 
     @Override

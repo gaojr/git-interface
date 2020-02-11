@@ -35,10 +35,30 @@ public class Repository {
      */
     @Expose
     private List<Branch> branchList;
+    /**
+     * 能否直接变基
+     */
+    @Expose
+    private boolean canRebase = true;
+    /**
+     * 新增文件数量
+     */
+    @Expose
+    private int add = 0;
+    /**
+     * 修改文件数量
+     */
+    @Expose
+    private int modify = 0;
+    /**
+     * 删除文件数量
+     */
+    @Expose
+    private int delete = 0;
 
     @Override
     public String toString() {
-        return String.format("%s (%s)", name, path);
+        return String.format("%s (%s) [+%d~%d-%d]", name, path, add, modify, delete);
     }
 
     @Override

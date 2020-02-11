@@ -121,26 +121,6 @@ public final class GitUtil {
     /**
      * 状态
      *
-     * @param branch 分支
-     * @return 命令运行结果
-     */
-    public static CommandResult status(Branch branch) {
-        File dir = branch.getRepository().getDir();
-        if (branch.isCurrent()) {
-            return status(dir);
-        }
-        CommandResult result = checkout(dir, branch.getName());
-        if (!result.isSuccess()) {
-            return result;
-        }
-        result = status(dir);
-        checkoutBack(dir);
-        return result;
-    }
-
-    /**
-     * 状态
-     *
      * @param dir 目录
      * @return 命令运行结果
      */
@@ -219,10 +199,10 @@ public final class GitUtil {
             br.setUpstream(json.get("upstream").getAsString());
             String track = json.get("track").getAsString();
             branchTrack(br, track);
-            String status = status(br).getMessage().trim();
-            branchStatus(br, status);
             branchList.add(br);
         }
+        String status = status(repository.getDir()).getMessage().trim();
+        setStatus(repository, status);
         return branchList;
     }
 
@@ -251,10 +231,10 @@ public final class GitUtil {
     /**
      * 填入分支状态
      *
-     * @param br 分支
+     * @param repo 分支
      * @param statusStr 分支状态
      */
-    private static void branchStatus(Branch br, String statusStr) {
+    private static void setStatus(Repository repo, String statusStr) {
         if (StringUtils.isBlank(statusStr)) {
             return;
         }
@@ -273,10 +253,10 @@ public final class GitUtil {
             }
             // TODO 还有一些奇怪的状态……例如: copied {@link https://git-scm.com/docs/git-status#_changed_tracked_entries}
         }
-        br.setAdd(add);
-        br.setDelete(delete);
-        br.setModify(modify);
-        br.setCanRebase(add < 1 && modify < 1 && delete < 1);
+        repo.setAdd(add);
+        repo.setDelete(delete);
+        repo.setModify(modify);
+        repo.setCanRebase(add < 1 && modify < 1 && delete < 1);
     }
 
     /**
