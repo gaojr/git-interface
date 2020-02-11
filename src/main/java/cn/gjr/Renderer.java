@@ -15,6 +15,10 @@ import java.awt.*;
  */
 public class Renderer extends DefaultTreeCellRenderer {
     /**
+     * 分组图标
+     */
+    private transient Icon groupIcon = new ImageIcon(Icons.GROUP.toString());
+    /**
      * 仓库图标
      */
     private transient Icon repositoryIcon = new ImageIcon(Icons.REPOSITORY.toString());
@@ -31,8 +35,10 @@ public class Renderer extends DefaultTreeCellRenderer {
         Object obj = node.getUserObject();
         if (GitUtil.isRepository(obj)) {
             setIcon(repositoryIcon);
-        } else if (leaf && !node.isRoot()) {
+        } else if (GitUtil.isBranch(obj)) {
             setIcon(branchIcon);
+        } else {
+            setIcon(groupIcon);
         }
         return this;
     }

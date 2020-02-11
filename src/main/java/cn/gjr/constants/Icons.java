@@ -17,6 +17,10 @@ import java.net.URL;
 @Getter
 public enum Icons {
     /**
+     * 分组
+     */
+    GROUP("group"),
+    /**
      * 分支
      */
     BRANCH("branch"),
