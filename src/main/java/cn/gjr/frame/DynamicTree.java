@@ -73,6 +73,14 @@ public class DynamicTree extends JPanel {
     }
 
     /**
+     * TODO 增加分组
+     */
+    void addGroup() {
+        String groupName = "";
+        addObject(null, groupName, true);
+    }
+
+    /**
      * 增加仓库节点
      */
     void addRepo() {

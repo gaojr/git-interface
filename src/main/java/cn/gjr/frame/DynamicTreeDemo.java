@@ -62,6 +62,9 @@ public class DynamicTreeDemo extends JPanel implements ActionListener {
     public void actionPerformed(ActionEvent event) {
         Commands command = Commands.valueOf(event.getActionCommand());
         switch (command) {
+            case GROUP:
+                treePanel.addGroup();
+                break;
             case REPO:
                 treePanel.addRepo();
                 break;
@@ -99,13 +102,16 @@ public class DynamicTreeDemo extends JPanel implements ActionListener {
      * 生成并添加按钮（新增、移除）
      */
     private void createButtons2() {
+        // 分组按钮 = 新增分组
+        JButton groupButton = createButton(Titles.ADD_GROUP, Commands.GROUP);
         // 新增按钮 = 新增仓库
         JButton addButton = createButton(Titles.ADD_REPO, Commands.REPO);
         // 移除按钮 = 移除仓库
         JButton removeButton = createButton(Titles.REMOVE, Commands.REMOVE);
 
         // 添加到面板
-        JPanel btnPanel = new JPanel(new GridLayout(0, 2));
+        JPanel btnPanel = new JPanel(new GridLayout(0, 3));
+        btnPanel.add(groupButton);
         btnPanel.add(addButton);
         btnPanel.add(removeButton);
         add(btnPanel, BorderLayout.SOUTH);
