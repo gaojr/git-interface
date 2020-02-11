@@ -94,10 +94,12 @@ public class DynamicTree extends JPanel {
      * 移除
      */
     void remove() {
-        int count = tree.getSelectionCount();
         TreePath currentSelection = tree.getSelectionPath();
-        if (count != 1 || currentSelection == null) {
-            // TODO 提示
+        if (currentSelection == null) {
+            return;
+        }
+        if (tree.getSelectionCount() != 1) {
+            JOptionPane.showMessageDialog(tree, "只能移除单个节点！", "非法操作", JOptionPane.WARNING_MESSAGE);
             return;
         }
         // 有选择的节点
@@ -105,7 +107,7 @@ public class DynamicTree extends JPanel {
         Object obj = currentNode.getUserObject();
         if (GitUtil.isBranch(obj)) {
             // 是分支对象
-            // TODO 提示
+            JOptionPane.showMessageDialog(tree, "不能移除分支！", "非法操作", JOptionPane.WARNING_MESSAGE);
             return;
         }
         // 只删除仓库
@@ -309,7 +311,7 @@ public class DynamicTree extends JPanel {
             }
             // 阻止向子节点拖动
             if (nodePath.isDescendant(toPath)) {
-                JOptionPane.showMessageDialog(tree, "无法移动！", "非法操作", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(tree, "无法移动！", "非法操作", JOptionPane.WARNING_MESSAGE);
                 return;
             }
             DefaultMutableTreeNode fromNode = (DefaultMutableTreeNode) nodePath.getLastPathComponent();
