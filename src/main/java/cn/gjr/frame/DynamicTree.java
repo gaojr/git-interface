@@ -11,6 +11,7 @@ import cn.gjr.utils.GitUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.swing.*;
 import javax.swing.event.TreeModelEvent;
@@ -36,6 +37,10 @@ public class DynamicTree extends JPanel {
      * 根节点
      */
     private DefaultMutableTreeNode rootNode;
+    /**
+     * 默认组节点
+     */
+    private DefaultMutableTreeNode defaultNode;
     /**
      * 树模型
      */
@@ -70,6 +75,13 @@ public class DynamicTree extends JPanel {
 
         JScrollPane scrollPane = new JScrollPane(tree);
         add(scrollPane);
+    }
+
+    /**
+     * 添加默认组节点
+     */
+    void createDefaultNode() {
+        defaultNode = addObject(rootNode, "默认", true);
     }
 
     /**
@@ -212,6 +224,7 @@ public class DynamicTree extends JPanel {
         GitUtil.generateRepositoryList(base.getRepositoryList());
         // 修改树
         rootNode.removeAllChildren();
+        createDefaultNode();
         createTree(base.getRepositoryList());
         // 刷新树
         treeModel.reload();
@@ -235,9 +248,13 @@ public class DynamicTree extends JPanel {
      * @param repo 仓库
      */
     private void addNode(Repository repo) {
-        DefaultMutableTreeNode rNode = addObject(null, repo, true);
+        DefaultMutableTreeNode parent = defaultNode;
+        if (StringUtils.isNoneBlank(repo.getGroup())) {
+            parent = addObject(rootNode, repo.getGroup(), true);
+        }
+        DefaultMutableTreeNode rNode = addObject(parent, repo, true);
         for (Branch branch : repo.getBranchList()) {
-            addObject(rNode, branch, false);
+            addObject(rNode, branch, true);
         }
     }
 
