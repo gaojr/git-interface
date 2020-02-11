@@ -26,7 +26,7 @@ public enum Titles {
     /**
      * 移除
      */
-    REMOVE("-"),
+    REMOVE("-移除"),
     /**
      * 保存
      */

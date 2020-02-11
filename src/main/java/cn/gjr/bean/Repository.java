@@ -58,7 +58,7 @@ public class Repository {
 
     @Override
     public String toString() {
-        return String.format("%s (%s) [+%d~%d-%d]", name, path, add, modify, delete);
+        return String.format("%s (%s) +%d~%d-%d", name, path, add, modify, delete);
     }
 
     @Override
