@@ -339,9 +339,9 @@ public class DynamicTree extends JPanel {
         }
 
         @Override
-        public void mouseReleased(MouseEvent e) {
+        public void mouseReleased(MouseEvent event) {
             // 鼠标松开时获得需要拖到哪个父节点
-            TreePath toPath = tree.getPathForLocation(e.getX(), e.getY());
+            TreePath toPath = tree.getPathForLocation(event.getX(), event.getY());
             if (toPath == null || nodePath == null || toPath == nodePath) {
                 return;
             }
