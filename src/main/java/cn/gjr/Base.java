@@ -166,7 +166,8 @@ public class Base {
         TypeToken<List<Repository>> tokenRepo = new TypeToken<List<Repository>>() {
         };
         repositories = readConfig(tokenRepo, repositoryFile);
-        repositories = config2Repository(repositories);
+        repositories = deduplicate(repositories);
+        config2Repository(repositories);
     }
 
     /**
@@ -191,9 +192,8 @@ public class Base {
      * 处理仓库列表
      *
      * @param configList 仓库list
-     * @return 校正后的仓库list
      */
-    private List<Repository> config2Repository(List<Repository> configList) {
+    private void config2Repository(List<Repository> configList) {
         configList.stream().filter(e -> StringUtils.isNoneBlank(e.getName(), e.getPath())).forEach(e -> {
             // 转为系统路径
             String path = FilenameUtils.separatorsToSystem(e.getPath());
@@ -204,6 +204,5 @@ public class Base {
                 e.getBranchList().forEach(b -> b.setRepository(e));
             }
         });
-        return deduplicate(configList);
     }
 }
