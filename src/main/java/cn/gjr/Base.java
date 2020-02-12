@@ -25,6 +25,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -59,7 +60,7 @@ public class Base {
      */
     @Getter
     @Setter
-    private Map<String, DefaultMutableTreeNode> groups;
+    private Map<String, DefaultMutableTreeNode> groups = new HashMap<>();
     /**
      * 仓库列表
      */
