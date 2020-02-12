@@ -1,5 +1,6 @@
 package cn.gjr;
 
+import cn.gjr.bean.Group;
 import cn.gjr.bean.Repository;
 import cn.gjr.frame.DynamicTreeDemo;
 import cn.gjr.utils.FileUtil;
@@ -16,6 +17,7 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.swing.*;
+import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -25,6 +27,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -35,9 +38,29 @@ import java.util.stream.Collectors;
 @Slf4j
 public class Base {
     /**
+     * 类型-分组
+     */
+    TypeToken<List<Group>> groupToken = new TypeToken<List<Group>>() {
+    };
+    /**
+     * 类型-仓库
+     */
+    TypeToken<List<Repository>> repoToken = new TypeToken<List<Repository>>() {
+    };
+    /**
+     * 缓存文件-分组
+     */
+    private File groupFile;
+    /**
      * 缓存文件-仓库
      */
     private File repositoryFile;
+    /**
+     * 分组列表
+     */
+    @Getter
+    @Setter
+    private Map<Group, DefaultMutableTreeNode> groups;
     /**
      * 仓库列表
      */
@@ -124,6 +147,8 @@ public class Base {
         try {
             URL url = Base.class.getResource("/cache/repository.json");
             repositoryFile = new File(url.toURI());
+            url = Base.class.getResource("/cache/group.json");
+            groupFile = new File(url.toURI());
         } catch (URISyntaxException e) {
             log.error("获取配置文件失败！", e);
             return true;
@@ -136,9 +161,10 @@ public class Base {
      */
     private void writeConfig() {
         // 仓库
-        TypeToken<List<Repository>> repoToken = new TypeToken<List<Repository>>() {
-        };
         write(repoToken, repositories, repositoryFile);
+        // 分组
+        List<Group> groupList = new ArrayList<>(groups.keySet());
+        write(groupToken, groupList, groupFile);
     }
 
     /**
@@ -163,11 +189,14 @@ public class Base {
      * 读取配置
      */
     private void readConfig() {
-        TypeToken<List<Repository>> tokenRepo = new TypeToken<List<Repository>>() {
-        };
-        repositories = readConfig(tokenRepo, repositoryFile);
+        // 仓库
+        repositories = readConfig(repoToken, repositoryFile);
         repositories = deduplicate(repositories);
         config2Repository(repositories);
+        // 分组
+        List<Group> groupList = readConfig(groupToken, groupFile);
+        groupList = deduplicate(groupList);
+        groupList.forEach(e -> groups.put(e, null));
     }
 
     /**
