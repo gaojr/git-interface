@@ -43,7 +43,7 @@ public class Base {
      */
     @Getter
     @Setter
-    private List<Repository> repositoryList;
+    private List<Repository> repositories;
 
     private Base() {
         // Schedule a job for the event-dispatching thread: creating and showing this application's GUI.
@@ -138,7 +138,7 @@ public class Base {
         // 仓库
         TypeToken<List<Repository>> repoToken = new TypeToken<List<Repository>>() {
         };
-        write(repoToken, repositoryList, repositoryFile);
+        write(repoToken, repositories, repositoryFile);
     }
 
     /**
@@ -165,8 +165,8 @@ public class Base {
     private void readConfig() {
         TypeToken<List<Repository>> tokenRepo = new TypeToken<List<Repository>>() {
         };
-        repositoryList = readConfig(tokenRepo, repositoryFile);
-        repositoryList = config2Repository(repositoryList);
+        repositories = readConfig(tokenRepo, repositoryFile);
+        repositories = config2Repository(repositories);
     }
 
     /**

@@ -35,7 +35,7 @@ public class DynamicTreeDemo extends JPanel implements ActionListener {
         // 生成组件
         treePanel = new DynamicTree(base);
         treePanel.createDefaultNode();
-        treePanel.createTree(base.getRepositoryList());
+        treePanel.createTree(base.getRepositories());
         treePanel.setRenderer(new Renderer());
 
         createButtons1();

@@ -107,7 +107,7 @@ public class DynamicTree extends JPanel {
      */
     void addRepo(Repository repo) {
         // 同步处理 repositoryList
-        base.getRepositoryList().add(repo);
+        base.getRepositories().add(repo);
         // 增加节点
         addNode(repo);
     }
@@ -136,7 +136,7 @@ public class DynamicTree extends JPanel {
         if (GitUtil.isRepository(obj)) {
             Repository rep = (Repository) obj;
             // 同步处理 repositoryList
-            base.getRepositoryList().remove(rep);
+            base.getRepositories().remove(rep);
             // 移除节点
             treeModel.removeNodeFromParent(currentNode);
         }
@@ -185,7 +185,7 @@ public class DynamicTree extends JPanel {
             DefaultMutableTreeNode node = (DefaultMutableTreeNode) path.getLastPathComponent();
             if (node.isRoot()) {
                 // 是根节点
-                return new Selected(base.getRepositoryList(), Collections.emptyList());
+                return new Selected(base.getRepositories(), Collections.emptyList());
             }
             Object obj = node.getUserObject();
             if (node.isLeaf()) {
@@ -222,11 +222,11 @@ public class DynamicTree extends JPanel {
      */
     private void reloadTree() {
         // 同步处理 repositoryList
-        GitUtil.generateRepositoryList(base.getRepositoryList());
+        GitUtil.generateRepositoryList(base.getRepositories());
         // 修改树
         rootNode.removeAllChildren();
         createDefaultNode();
-        createTree(base.getRepositoryList());
+        createTree(base.getRepositories());
         // 刷新树
         treeModel.reload();
         expandTree();
