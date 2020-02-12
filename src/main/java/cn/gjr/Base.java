@@ -38,7 +38,6 @@ public class Base {
      * 缓存文件-仓库
      */
     private File repositoryFile;
-
     /**
      * 仓库列表
      */
@@ -103,7 +102,7 @@ public class Base {
             return;
         }
         // 处理分支
-        repositoryList = readConfig();
+        readConfig();
         // 生成panel
         JPanel panel = DynamicTreeDemo.createAndShowGUI(this);
         JFrame frame = createFrame("git工具", panel, 450, 400);
@@ -136,29 +135,52 @@ public class Base {
      * 写入配置
      */
     private void writeConfig() {
-        TypeToken<List<Repository>> typeToken = new TypeToken<List<Repository>>() {
+        // 仓库
+        TypeToken<List<Repository>> repoToken = new TypeToken<List<Repository>>() {
         };
-        JsonArray array = JsonUtil.list2Array(repositoryList, typeToken);
+        write(repoToken, repositoryList, repositoryFile);
+    }
+
+    /**
+     * 写入配置
+     *
+     * @param token 对象类型
+     * @param data 被写入的数据
+     * @param file 配置文件
+     * @param <T> 类型
+     */
+    private <T> void write(TypeToken<List<T>> token, List<T> data, File file) {
+        JsonArray array = JsonUtil.list2Array(data, token);
         String output = JsonUtil.array2String(array);
-        try (FileOutputStream outputStream = new FileOutputStream(repositoryFile)) {
+        try (FileOutputStream outputStream = new FileOutputStream(file)) {
             IOUtils.write(output, outputStream, StandardCharsets.UTF_8);
         } catch (IOException e) {
-            log.error("Write Config Error!", e);
+            log.error("Write Config Error! ", e);
         }
     }
 
     /**
      * 读取配置
-     *
-     * @return 仓库list
      */
-    private List<Repository> readConfig() {
-        try (InputStream inputStream = new FileInputStream(repositoryFile)) {
+    private void readConfig() {
+        TypeToken<List<Repository>> tokenRepo = new TypeToken<List<Repository>>() {
+        };
+        repositoryList = readConfig(tokenRepo, repositoryFile);
+        repositoryList = config2Repository(repositoryList);
+    }
+
+    /**
+     * 读取配置
+     *
+     * @param token 对象类型
+     * @param file 配置文件
+     * @param <T> 类型
+     * @return 配置信息
+     */
+    private <T> List<T> readConfig(TypeToken<List<T>> token, File file) {
+        try (InputStream inputStream = new FileInputStream(file)) {
             String config = IOUtils.toString(inputStream, StandardCharsets.UTF_8);
-            TypeToken<ArrayList<Repository>> typeToken = new TypeToken<ArrayList<Repository>>() {
-            };
-            List<Repository> list = JsonUtil.string2Bean(config, typeToken);
-            return config2Repository(list);
+            return JsonUtil.string2Bean(config, token);
         } catch (IOException e) {
             log.error("Read Config Error!", e);
         }
