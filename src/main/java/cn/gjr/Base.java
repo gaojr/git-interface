@@ -1,6 +1,5 @@
 package cn.gjr;
 
-import cn.gjr.bean.Group;
 import cn.gjr.bean.Repository;
 import cn.gjr.frame.DynamicTreeDemo;
 import cn.gjr.utils.FileUtil;
@@ -40,7 +39,7 @@ public class Base {
     /**
      * 类型-分组
      */
-    TypeToken<List<Group>> groupToken = new TypeToken<List<Group>>() {
+    TypeToken<List<String>> groupToken = new TypeToken<List<String>>() {
     };
     /**
      * 类型-仓库
@@ -60,7 +59,7 @@ public class Base {
      */
     @Getter
     @Setter
-    private Map<Group, DefaultMutableTreeNode> groups;
+    private Map<String, DefaultMutableTreeNode> groups;
     /**
      * 仓库列表
      */
@@ -163,7 +162,7 @@ public class Base {
         // 仓库
         write(repoToken, repositories, repositoryFile);
         // 分组
-        List<Group> groupList = new ArrayList<>(groups.keySet());
+        List<String> groupList = new ArrayList<>(groups.keySet());
         write(groupToken, groupList, groupFile);
     }
 
@@ -194,7 +193,7 @@ public class Base {
         repositories = deduplicate(repositories);
         config2Repository(repositories);
         // 分组
-        List<Group> groupList = readConfig(groupToken, groupFile);
+        List<String> groupList = readConfig(groupToken, groupFile);
         groupList = deduplicate(groupList);
         groupList.forEach(e -> groups.put(e, null));
     }
