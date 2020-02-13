@@ -11,6 +11,7 @@ import cn.gjr.utils.GitUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.swing.*;
 import javax.swing.event.TreeModelEvent;
@@ -101,10 +102,20 @@ public class DynamicTree extends JPanel {
      * 增加分组
      */
     void addGroup() {
-        // TODO 获取分组名称
-        String groupName = "分组";
+        new GroupFrame(this);
+    }
+
+    /**
+     * 增加分组
+     */
+    void addGroup(String groupName) {
+        groupName = StringUtils.trim(groupName);
+        if (StringUtils.isBlank(groupName)) {
+            JOptionPane.showMessageDialog(tree, "分组名不可为空！", "错误", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
         if (groupMap.containsKey(groupName)) {
-            JOptionPane.showMessageDialog(tree, "分组名不可重复！", "非法操作", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(tree, "分组名不可重复！", "错误", JOptionPane.ERROR_MESSAGE);
             return;
         }
         Node node = addObject(rootNode, groupName);
