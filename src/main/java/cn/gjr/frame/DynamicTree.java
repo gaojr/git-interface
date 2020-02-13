@@ -368,6 +368,15 @@ public class DynamicTree extends JPanel {
                 int index = parent.getIndex(toNode);
                 parent.insert(fromNode, index);
             }
+            // 处理base.getRepositories()
+            if (fromDepth == 3) {
+                // 被移动的是分支节点
+                Repository repo = (Repository) fromNode.getUserObject();
+                // 修改
+                DefaultMutableTreeNode parent = (DefaultMutableTreeNode) fromNode.getParent();
+                String group = (String) parent.getUserObject();
+                base.getRepositories().stream().filter(e -> e.equals(repo)).forEach(e -> e.setGroup(group));
+            }
             nodePath = null;
             treeModel.reload();
         }
