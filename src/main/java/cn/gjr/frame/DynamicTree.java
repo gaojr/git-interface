@@ -320,12 +320,12 @@ public class DynamicTree extends JPanel {
     }
 
     /**
-     * TODO 节点转仓库list
+     * 节点转仓库list
      *
      * @return 仓库list
      */
     public List<Repository> getRepositories() {
-        return null;
+        return rootNode.getRepositoryList();
     }
 
     /**
