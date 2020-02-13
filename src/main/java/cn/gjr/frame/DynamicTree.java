@@ -329,12 +329,16 @@ public class DynamicTree extends JPanel {
     }
 
     /**
-     * TODO 节点转分组list
+     * 节点转分组list
      *
      * @return 分组list
      */
     public List<String> getGroups() {
-        return null;
+        List<String> list = rootNode.getGroupList();
+        list.remove(DEFAULT_GROUP);
+        list.remove("");
+        list.remove(null);
+        return list;
     }
 
     static class NodeListener implements TreeModelListener {

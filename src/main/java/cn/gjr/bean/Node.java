@@ -48,6 +48,30 @@ public class Node extends DefaultMutableTreeNode {
     }
 
     /**
+     * 获取节点下的分组
+     *
+     * @return 分组list
+     */
+    public List<String> getGroupList() {
+        List<String> list = new ArrayList<>();
+        switch (type) {
+            case TYPE_ROOT:
+                for (int i = 0; i < getChildCount(); i++) {
+                    Node node = (Node) getChildAt(i);
+                    list.addAll(node.getGroupList());
+                }
+                break;
+            case TYPE_GROUP:
+                list.add((String) getUserObject());
+            case TYPE_REPO:
+            case TYPE_BRANCH:
+            default:
+                break;
+        }
+        return list;
+    }
+
+    /**
      * 获取节点下的仓库
      *
      * @return 仓库list
