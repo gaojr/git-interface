@@ -41,7 +41,7 @@ public class ChooseFrame extends JPanel implements ActionListener {
             if (GitUtil.isRepository(dir)) {
                 showChoose(dir.getPath());
             } else {
-                JOptionPane.showMessageDialog(tree, "选择的文件夹不是git仓库！", "非法操作", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(tree, "选择的文件夹不是git仓库！", "非法操作", JOptionPane.ERROR_MESSAGE);
             }
         }
     }

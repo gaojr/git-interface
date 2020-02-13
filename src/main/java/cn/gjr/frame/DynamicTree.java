@@ -94,7 +94,7 @@ public class DynamicTree extends JPanel {
         String groupName = "分组";
         Map<String, DefaultMutableTreeNode> groups = base.getGroups();
         if (groups.containsKey(groupName)) {
-            JOptionPane.showMessageDialog(tree, "分组名不可重复！", "非法操作", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(tree, "分组名不可重复！", "非法操作", JOptionPane.ERROR_MESSAGE);
             return;
         }
         DefaultMutableTreeNode node = addObject(rootNode, groupName, true);
@@ -129,7 +129,7 @@ public class DynamicTree extends JPanel {
             return;
         }
         if (tree.getSelectionCount() != 1) {
-            JOptionPane.showMessageDialog(tree, "只能移除单个节点！", "非法操作", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(tree, "只能移除单个节点！", "非法操作", JOptionPane.ERROR_MESSAGE);
             return;
         }
         // 有选择的节点
@@ -137,18 +137,24 @@ public class DynamicTree extends JPanel {
         Object obj = currentNode.getUserObject();
         if (GitUtil.isBranch(obj)) {
             // 是分支对象
-            JOptionPane.showMessageDialog(tree, "不能移除分支！", "非法操作", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-        // 删除仓库
-        if (GitUtil.isRepository(obj)) {
+            JOptionPane.showMessageDialog(tree, "不能移除分支！", "非法操作", JOptionPane.ERROR_MESSAGE);
+        } else if (GitUtil.isRepository(obj)) {
+            // 删除仓库
             Repository rep = (Repository) obj;
             // 同步处理 repositoryList
             base.getRepositories().remove(rep);
             // 移除节点
             treeModel.removeNodeFromParent(currentNode);
+        } else if (defaultNode.equals(currentNode)) {
+            // 是默认分组
+            JOptionPane.showMessageDialog(tree, "不能移除默认分组！", "非法操作", JOptionPane.ERROR_MESSAGE);
+        } else {
+            // 是分组
+            int value = JOptionPane.showConfirmDialog(tree, "分组下的仓库也会被移除", "警告", JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
+            if (JOptionPane.OK_OPTION == value) {
+                treeModel.removeNodeFromParent(currentNode);
+            }
         }
-        // TODO 删除分组
     }
 
     /**
@@ -350,14 +356,14 @@ public class DynamicTree extends JPanel {
             }
             // 阻止向子节点拖动
             if (nodePath.isDescendant(toPath)) {
-                JOptionPane.showMessageDialog(tree, "无法移动！", "非法操作", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(tree, "无法移动！", "非法操作", JOptionPane.ERROR_MESSAGE);
                 return;
             }
             DefaultMutableTreeNode fromNode = (DefaultMutableTreeNode) nodePath.getLastPathComponent();
             int fromDepth = nodePath.getPathCount();
             if (fromDepth == 4) {
                 // 排除分支节点
-                JOptionPane.showMessageDialog(tree, "无法移动！", "非法操作", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(tree, "无法移动！", "非法操作", JOptionPane.ERROR_MESSAGE);
                 return;
             }
             DefaultMutableTreeNode toNode = (DefaultMutableTreeNode) toPath.getLastPathComponent();
