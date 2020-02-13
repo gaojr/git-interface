@@ -1,5 +1,6 @@
 package cn.gjr;
 
+import cn.gjr.bean.Node;
 import cn.gjr.bean.Repository;
 import cn.gjr.frame.DynamicTreeDemo;
 import cn.gjr.utils.FileUtil;
@@ -16,7 +17,6 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.swing.*;
-import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -60,7 +60,7 @@ public class Base {
      */
     @Getter
     @Setter
-    private Map<String, DefaultMutableTreeNode> groups = new HashMap<>();
+    private Map<String, Node> groups = new HashMap<>();
     /**
      * 仓库列表
      */
@@ -160,6 +160,7 @@ public class Base {
      * 写入配置
      */
     private void writeConfig() {
+        // TODO 改为读取节点
         // 仓库
         write(repoToken, repositories, repositoryFile);
         // 分组
