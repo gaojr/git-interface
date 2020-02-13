@@ -367,6 +367,7 @@ public class DynamicTree extends JPanel {
 
         @Override
         public void mousePressed(MouseEvent e) {
+            nodePath = null;
             // 按下鼠标时候获得被拖动的节点
             TreePath tp = tree.getPathForLocation(e.getX(), e.getY());
             if (tp != null) {
@@ -399,12 +400,22 @@ public class DynamicTree extends JPanel {
                 // 下级->上级
                 toNode.add(fromNode);
             } else if (toDepth == fromDepth) {
+                if (defaultNode.equals(fromNode) || defaultNode.equals(toNode)) {
+                    JOptionPane.showMessageDialog(tree, "不能移动默认节点！", "非法操作", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
                 // 同级移动
                 Node parent = (Node) toNode.getParent();
                 int index = parent.getIndex(toNode);
                 parent.insert(fromNode, index);
             }
-            nodePath = null;
+            if (fromDepth == 3) {
+                Node parent = (Node) fromNode.getParent();
+                String group = (String) parent.getUserObject();
+                Repository repo = (Repository) fromNode.getUserObject();
+                // 修改仓库节点的分组名
+                repo.setGroup(group);
+            }
             treeModel.reload();
             expandTree();
         }
