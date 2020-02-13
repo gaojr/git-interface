@@ -191,14 +191,11 @@ public class DynamicTree extends JPanel {
                 return new Selected(base.getRepositories(), Collections.emptyList());
             }
             Object obj = node.getUserObject();
-            if (node.isLeaf()) {
+            if (GitUtil.isBranch(obj)) {
                 // 是分支
                 Branch b = (Branch) obj;
                 branchList.add(b);
-                continue;
-            }
-            int depth = path.getPathCount();
-            if (depth == 2) {
+            } else if (GitUtil.isRepository(obj)) {
                 // 是仓库
                 Repository r = (Repository) obj;
                 repositoryList.add(r);
