@@ -34,6 +34,10 @@ import java.util.*;
 @Slf4j
 public class DynamicTree extends JPanel {
     /**
+     * 默认组名
+     */
+    private static final String DEFAULT_GROUP = "默认";
+    /**
      * 根节点
      */
     private Node rootNode;
@@ -90,12 +94,11 @@ public class DynamicTree extends JPanel {
      * @param groups 分组
      */
     void createGroupNode(List<String> groups) {
-        String defaultKey = "默认";
-        defaultNode = addObject(rootNode, defaultKey);
+        defaultNode = addObject(rootNode, DEFAULT_GROUP);
         groups.forEach(e -> groupMap.put(e, addObject(rootNode, e)));
         groupMap.put(null, defaultNode);
         groupMap.put("", defaultNode);
-        groupMap.put(defaultKey, defaultNode);
+        groupMap.put(DEFAULT_GROUP, defaultNode);
     }
 
     /**
