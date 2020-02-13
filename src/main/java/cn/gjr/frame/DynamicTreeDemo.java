@@ -1,7 +1,7 @@
 package cn.gjr.frame;
 
-import cn.gjr.Base;
 import cn.gjr.Renderer;
+import cn.gjr.bean.Repository;
 import cn.gjr.constants.Commands;
 import cn.gjr.constants.Titles;
 import lombok.extern.slf4j.Slf4j;
@@ -10,6 +10,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 /**
  * 动态树 Demo
@@ -26,16 +27,17 @@ public class DynamicTreeDemo extends JPanel implements ActionListener {
     /**
      * 构造函数
      *
-     * @param base 基类
+     * @param repositories 仓库
+     * @param groups 分组
      */
-    private DynamicTreeDemo(Base base) {
+    public DynamicTreeDemo(List<Repository> repositories, List<String> groups) {
         super(new BorderLayout());
         setOpaque(true);
 
         // 生成组件
-        treePanel = new DynamicTree(base);
-        treePanel.createGroupNode();
-        treePanel.createTree();
+        treePanel = new DynamicTree();
+        treePanel.createGroupNode(groups);
+        treePanel.createTree(repositories);
         treePanel.setRenderer(new Renderer());
 
         createButtons1();
@@ -47,11 +49,12 @@ public class DynamicTreeDemo extends JPanel implements ActionListener {
     /**
      * 生成并显示界面
      *
-     * @param base 基类
+     * @param repositories 仓库
+     * @param groups 分组
      * @return 面板
      */
-    public static JPanel createAndShowGUI(Base base) {
-        return new DynamicTreeDemo(base);
+    public static DynamicTreeDemo createAndShowGUI(List<Repository> repositories, List<String> groups) {
+        return new DynamicTreeDemo(repositories, groups);
     }
 
     /**
@@ -130,5 +133,23 @@ public class DynamicTreeDemo extends JPanel implements ActionListener {
         addButton.setActionCommand(command.toString());
         addButton.addActionListener(this);
         return addButton;
+    }
+
+    /**
+     * 节点转仓库list
+     *
+     * @return 仓库list
+     */
+    public List<Repository> getRepositories() {
+        return treePanel.getRepositories();
+    }
+
+    /**
+     * 节点转分组list
+     *
+     * @return 分组list
+     */
+    public List<String> getGroups() {
+        return treePanel.getGroups();
     }
 }

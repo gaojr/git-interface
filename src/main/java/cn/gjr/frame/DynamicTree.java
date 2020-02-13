@@ -1,6 +1,5 @@
 package cn.gjr.frame;
 
-import cn.gjr.Base;
 import cn.gjr.bean.Branch;
 import cn.gjr.bean.Node;
 import cn.gjr.bean.Repository;
@@ -33,7 +32,6 @@ import java.util.*;
  */
 @Slf4j
 public class DynamicTree extends JPanel {
-    private transient Base base;
     /**
      * 根节点
      */
@@ -50,12 +48,19 @@ public class DynamicTree extends JPanel {
      * 树
      */
     private JTree tree;
+    /**
+     * 分组节点
+     */
+    private Map<String, Node> groupMap = new HashMap<>();
 
-    DynamicTree(Base base) {
+    /**
+     * 构造函数
+     */
+    public DynamicTree() {
         super(new GridLayout(1, 0));
-        this.base = base;
 
         rootNode = new Node("仓库");
+        rootNode.setType(Node.TYPE_ROOT);
         treeModel = new DefaultTreeModel(rootNode);
         treeModel.addTreeModelListener(new NodeListener());
 
@@ -80,14 +85,16 @@ public class DynamicTree extends JPanel {
 
     /**
      * 添加组节点
+     *
+     * @param groups 分组
      */
-    void createGroupNode() {
+    void createGroupNode(List<String> groups) {
         String defaultKey = "默认";
         defaultNode = addObject(rootNode, defaultKey);
-        Map<String, Node> groups = base.getGroups();
-        groups.forEach((k, v) -> groups.put(k, addObject(rootNode, k)));
-        groups.put(null, defaultNode);
-        groups.put(defaultKey, defaultNode);
+        groups.forEach(e -> groupMap.put(e, addObject(rootNode, e)));
+        groupMap.put(null, defaultNode);
+        groupMap.put("", defaultNode);
+        groupMap.put(defaultKey, defaultNode);
     }
 
     /**
@@ -96,13 +103,12 @@ public class DynamicTree extends JPanel {
     void addGroup() {
         // TODO 获取分组名称
         String groupName = "分组";
-        Map<String, Node> groups = base.getGroups();
-        if (groups.containsKey(groupName)) {
+        if (groupMap.containsKey(groupName)) {
             JOptionPane.showMessageDialog(tree, "分组名不可重复！", "非法操作", JOptionPane.ERROR_MESSAGE);
             return;
         }
         Node node = addObject(rootNode, groupName);
-        groups.put(groupName, node);
+        groupMap.put(groupName, node);
     }
 
     /**
@@ -118,8 +124,6 @@ public class DynamicTree extends JPanel {
      * @param repo 仓库
      */
     void addRepo(Repository repo) {
-        // 同步处理 repositoryList
-        base.getRepositories().add(repo);
         // 增加节点
         addNode(repo);
     }
@@ -130,30 +134,26 @@ public class DynamicTree extends JPanel {
     void remove() {
         TreePath currentSelection = tree.getSelectionPath();
         if (currentSelection == null) {
+            // 没有选择的节点
             return;
         }
         if (tree.getSelectionCount() != 1) {
+            // 选择了多个节点
             JOptionPane.showMessageDialog(tree, "只能移除单个节点！", "非法操作", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        // 有选择的节点
         Node currentNode = (Node) (currentSelection.getLastPathComponent());
-        Object obj = currentNode.getUserObject();
-        if (GitUtil.isBranch(obj)) {
-            // 是分支对象
+        if (currentNode.getType() == Node.TYPE_BRANCH) {
+            // 是分支节点
             JOptionPane.showMessageDialog(tree, "不能移除分支！", "非法操作", JOptionPane.ERROR_MESSAGE);
-        } else if (GitUtil.isRepository(obj)) {
-            // 删除仓库
-            Repository rep = (Repository) obj;
-            // 同步处理 repositoryList
-            base.getRepositories().remove(rep);
-            // 移除节点
+        } else if (currentNode.getType() == Node.TYPE_REPO) {
+            // 是仓库节点
             treeModel.removeNodeFromParent(currentNode);
         } else if (defaultNode.equals(currentNode)) {
-            // 是默认分组
+            // 是默认分组节点
             JOptionPane.showMessageDialog(tree, "不能移除默认分组！", "非法操作", JOptionPane.ERROR_MESSAGE);
         } else {
-            // 是分组
+            // 是分组节点
             int value = JOptionPane.showConfirmDialog(tree, "分组下的仓库也会被移除", "警告", JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
             if (JOptionPane.OK_OPTION == value) {
                 treeModel.removeNodeFromParent(currentNode);
@@ -162,7 +162,7 @@ public class DynamicTree extends JPanel {
     }
 
     /**
-     * 拉取
+     * TODO 拉取
      */
     void fetch() {
         Selected selection = getSelection();
@@ -177,7 +177,7 @@ public class DynamicTree extends JPanel {
     }
 
     /**
-     * 变基
+     * TODO 变基
      */
     void rebase() {
         Selected selection = getSelection();
@@ -192,7 +192,7 @@ public class DynamicTree extends JPanel {
     }
 
     /**
-     * 获取已选的仓库列表和分支列表
+     * TODO 获取已选的仓库列表和分支列表
      *
      * @return 选择对象
      */
@@ -204,7 +204,7 @@ public class DynamicTree extends JPanel {
             Node node = (Node) path.getLastPathComponent();
             if (node.isRoot()) {
                 // 是根节点
-                return new Selected(base.getRepositories(), Collections.emptyList());
+                return new Selected(node.getRepositoryList(), Collections.emptyList());
             }
             Object obj = node.getUserObject();
             if (GitUtil.isBranch(obj)) {
@@ -217,12 +217,9 @@ public class DynamicTree extends JPanel {
                 repositoryList.add(r);
             } else {
                 // 是分组
-                for (int i = 0; i < node.getChildCount(); i++) {
-                    Node child = (Node) node.getChildAt(i);
-                    Repository r = (Repository) child.getUserObject();
-                    repositoryList.add(r);
-                }
+                repositoryList.addAll(node.getRepositoryList());
             }
+            repositoryList.addAll(node.getRepositoryList());
         }
         return new Selected(repositoryList, branchList);
     }
@@ -244,12 +241,6 @@ public class DynamicTree extends JPanel {
      * 重新加载树
      */
     private void reloadTree() {
-        // 同步处理 repositoryList
-        GitUtil.generateRepositoryList(base.getRepositories());
-        // 修改树
-        rootNode.removeAllChildren();
-        createGroupNode();
-        createTree();
         // 刷新树
         treeModel.reload();
         expandTree();
@@ -257,9 +248,11 @@ public class DynamicTree extends JPanel {
 
     /**
      * 生成树
+     *
+     * @param repositories 仓库
      */
-    void createTree() {
-        for (Repository repository : base.getRepositories()) {
+    void createTree(List<Repository> repositories) {
+        for (Repository repository : repositories) {
             addNode(repository);
         }
     }
@@ -270,8 +263,7 @@ public class DynamicTree extends JPanel {
      * @param repo 仓库
      */
     private void addNode(Repository repo) {
-        Map<String, Node> groups = base.getGroups();
-        Node parent = groups.getOrDefault(repo.getGroup(), defaultNode);
+        Node parent = groupMap.getOrDefault(repo.getGroup(), defaultNode);
         Node rNode = addObject(parent, repo);
         for (Branch branch : repo.getBranchList()) {
             addObject(rNode, branch);
@@ -306,11 +298,29 @@ public class DynamicTree extends JPanel {
     }
 
     /**
-     * 展开到叶子节点
+     * TODO 展开到叶子节点
      */
     public void expandTree() {
         int rowCount = tree.getRowCount();
         tree.expandRow(rowCount - 1);
+    }
+
+    /**
+     * TODO 节点转仓库list
+     *
+     * @return 仓库list
+     */
+    public List<Repository> getRepositories() {
+        return null;
+    }
+
+    /**
+     * TODO 节点转分组list
+     *
+     * @return 分组list
+     */
+    public List<String> getGroups() {
+        return null;
     }
 
     static class NodeListener implements TreeModelListener {
@@ -383,17 +393,9 @@ public class DynamicTree extends JPanel {
                 int index = parent.getIndex(toNode);
                 parent.insert(fromNode, index);
             }
-            // 处理base.getRepositories()
-            if (fromDepth == 3) {
-                // 被移动的是分支节点
-                Repository repo = (Repository) fromNode.getUserObject();
-                // 修改
-                Node parent = (Node) fromNode.getParent();
-                String group = (String) parent.getUserObject();
-                base.getRepositories().stream().filter(e -> e.equals(repo)).forEach(e -> e.setGroup(group));
-            }
             nodePath = null;
             treeModel.reload();
+            expandTree();
         }
 
         @Override

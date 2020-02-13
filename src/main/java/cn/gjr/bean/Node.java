@@ -38,6 +38,13 @@ public class Node extends DefaultMutableTreeNode {
 
     public Node(Object userObject) {
         super(userObject);
+        if (userObject instanceof Branch) {
+            type = TYPE_BRANCH;
+        } else if (userObject instanceof Repository) {
+            type = TYPE_REPO;
+        } else {
+            type = TYPE_GROUP;
+        }
     }
 
     /**

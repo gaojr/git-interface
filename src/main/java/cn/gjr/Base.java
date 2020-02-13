@@ -1,6 +1,5 @@
 package cn.gjr;
 
-import cn.gjr.bean.Node;
 import cn.gjr.bean.Repository;
 import cn.gjr.frame.DynamicTreeDemo;
 import cn.gjr.utils.FileUtil;
@@ -25,9 +24,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -60,13 +57,17 @@ public class Base {
      */
     @Getter
     @Setter
-    private Map<String, Node> groups = new HashMap<>();
+    private List<String> groups;
     /**
      * 仓库列表
      */
     @Getter
     @Setter
     private List<Repository> repositories;
+    /**
+     * 面板
+     */
+    private DynamicTreeDemo demo;
 
     private Base() {
         // Schedule a job for the event-dispatching thread: creating and showing this application's GUI.
@@ -127,8 +128,8 @@ public class Base {
         // 处理分支
         readConfig();
         // 生成panel
-        JPanel panel = DynamicTreeDemo.createAndShowGUI(this);
-        JFrame frame = createFrame("git工具", panel, 450, 400);
+        demo = DynamicTreeDemo.createAndShowGUI(repositories, groups);
+        JFrame frame = createFrame("git工具", demo, 450, 400);
         frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
@@ -160,12 +161,10 @@ public class Base {
      * 写入配置
      */
     private void writeConfig() {
-        // TODO 改为读取节点
         // 仓库
-        write(repoToken, repositories, repositoryFile);
+        write(repoToken, demo.getRepositories(), repositoryFile);
         // 分组
-        List<String> groupList = new ArrayList<>(groups.keySet());
-        write(groupToken, groupList, groupFile);
+        write(groupToken, demo.getGroups(), groupFile);
     }
 
     /**
@@ -192,12 +191,9 @@ public class Base {
     private void readConfig() {
         // 仓库
         repositories = readConfig(repoToken, repositoryFile);
-        repositories = deduplicate(repositories);
         config2Repository(repositories);
         // 分组
-        List<String> groupList = readConfig(groupToken, groupFile);
-        groupList = deduplicate(groupList);
-        groupList.forEach(e -> groups.put(e, null));
+        groups = readConfig(groupToken, groupFile);
     }
 
     /**
@@ -211,7 +207,8 @@ public class Base {
     private <T> List<T> readConfig(TypeToken<List<T>> token, File file) {
         try (InputStream inputStream = new FileInputStream(file)) {
             String config = IOUtils.toString(inputStream, StandardCharsets.UTF_8);
-            return JsonUtil.string2Bean(config, token);
+            List<T> list = JsonUtil.string2Bean(config, token);
+            return deduplicate(list);
         } catch (IOException e) {
             log.error("Read Config Error!", e);
         }
