@@ -7,7 +7,6 @@ import cn.gjr.bean.Selected;
 import cn.gjr.task.FetchTask;
 import cn.gjr.task.Pool;
 import cn.gjr.task.RebaseTask;
-import cn.gjr.utils.GitUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
@@ -312,11 +311,24 @@ public class DynamicTree extends JPanel {
     }
 
     /**
-     * TODO 展开到叶子节点
+     * 展开到叶子节点
      */
     public void expandTree() {
-        int rowCount = tree.getRowCount();
-        tree.expandRow(rowCount - 1);
+        expandAll(new TreePath(rootNode));
+    }
+
+    /**
+     * 展开全部
+     *
+     * @param parentPath 父节点
+     */
+    private void expandAll(TreePath parentPath) {
+        Node parent = (Node) parentPath.getLastPathComponent();
+        for (int i = 0; i < parent.getChildCount(); i++) {
+            Node node = (Node) parent.getChildAt(i);
+            expandAll(parentPath.pathByAddingChild(node));
+        }
+        tree.expandPath(parentPath);
     }
 
     /**
