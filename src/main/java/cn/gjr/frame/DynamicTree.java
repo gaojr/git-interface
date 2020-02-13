@@ -79,9 +79,9 @@ public class DynamicTree extends JPanel {
      */
     void createGroupNode() {
         String defaultKey = "默认";
-        defaultNode = addObject(rootNode, defaultKey, true);
+        defaultNode = addObject(rootNode, defaultKey);
         Map<String, DefaultMutableTreeNode> groups = base.getGroups();
-        groups.forEach((k, v) -> groups.put(k, addObject(rootNode, k, true)));
+        groups.forEach((k, v) -> groups.put(k, addObject(rootNode, k)));
         groups.put(null, defaultNode);
         groups.put(defaultKey, defaultNode);
     }
@@ -97,7 +97,7 @@ public class DynamicTree extends JPanel {
             JOptionPane.showMessageDialog(tree, "分组名不可重复！", "非法操作", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        DefaultMutableTreeNode node = addObject(rootNode, groupName, true);
+        DefaultMutableTreeNode node = addObject(rootNode, groupName);
         groups.put(groupName, node);
     }
 
@@ -262,9 +262,9 @@ public class DynamicTree extends JPanel {
     private void addNode(Repository repo) {
         Map<String, DefaultMutableTreeNode> groups = base.getGroups();
         DefaultMutableTreeNode parent = groups.getOrDefault(repo.getGroup(), defaultNode);
-        DefaultMutableTreeNode rNode = addObject(parent, repo, true);
+        DefaultMutableTreeNode rNode = addObject(parent, repo);
         for (Branch branch : repo.getBranchList()) {
-            addObject(rNode, branch, true);
+            addObject(rNode, branch);
         }
     }
 
@@ -273,20 +273,16 @@ public class DynamicTree extends JPanel {
      *
      * @param parent 父节点（为null时为根节点）
      * @param child 子节点对象
-     * @param visible 是否显示
      * @return 树节点
      */
-    private DefaultMutableTreeNode addObject(DefaultMutableTreeNode parent, Object child, boolean visible) {
+    private DefaultMutableTreeNode addObject(DefaultMutableTreeNode parent, Object child) {
         if (parent == null) {
             parent = rootNode;
         }
         DefaultMutableTreeNode childNode = new DefaultMutableTreeNode(child);
         // It is key to invoke this on the TreeModel, and NOT DefaultMutableTreeNode
         treeModel.insertNodeInto(childNode, parent, parent.getChildCount());
-
-        if (visible) {
-            tree.scrollPathToVisible(new TreePath(childNode.getPath()));
-        }
+        tree.scrollPathToVisible(new TreePath(childNode.getPath()));
         return childNode;
     }
 
