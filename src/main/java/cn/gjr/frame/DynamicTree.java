@@ -92,7 +92,13 @@ public class DynamicTree extends JPanel {
     void addGroup() {
         // TODO 获取分组名称
         String groupName = "分组";
-        addObject(rootNode, groupName, true);
+        Map<String, DefaultMutableTreeNode> groups = base.getGroups();
+        if (groups.containsKey(groupName)) {
+            JOptionPane.showMessageDialog(tree, "分组名不可重复！", "非法操作", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        DefaultMutableTreeNode node = addObject(rootNode, groupName, true);
+        groups.put(groupName, node);
     }
 
     /**
