@@ -11,7 +11,6 @@ import cn.gjr.utils.GitUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
 
 import javax.swing.*;
 import javax.swing.event.TreeModelEvent;
@@ -20,10 +19,8 @@ import javax.swing.tree.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * 动态树
@@ -78,10 +75,15 @@ public class DynamicTree extends JPanel {
     }
 
     /**
-     * 添加默认组节点
+     * 添加组节点
      */
-    void createDefaultNode() {
-        defaultNode = addObject(rootNode, "默认", true);
+    void createGroupNode() {
+        String defaultKey = "默认";
+        defaultNode = addObject(rootNode, defaultKey, true);
+        Map<String, DefaultMutableTreeNode> groups = base.getGroups();
+        groups.forEach((k, v) -> groups.put(k, addObject(rootNode, k, true)));
+        groups.put(null, defaultNode);
+        groups.put(defaultKey, defaultNode);
     }
 
     /**
@@ -132,7 +134,7 @@ public class DynamicTree extends JPanel {
             JOptionPane.showMessageDialog(tree, "不能移除分支！", "非法操作", JOptionPane.WARNING_MESSAGE);
             return;
         }
-        // 只删除仓库
+        // 删除仓库
         if (GitUtil.isRepository(obj)) {
             Repository rep = (Repository) obj;
             // 同步处理 repositoryList
@@ -140,6 +142,7 @@ public class DynamicTree extends JPanel {
             // 移除节点
             treeModel.removeNodeFromParent(currentNode);
         }
+        // TODO 删除分组
     }
 
     /**
@@ -200,6 +203,7 @@ public class DynamicTree extends JPanel {
                 Repository r = (Repository) obj;
                 repositoryList.add(r);
             }
+            // TODO 是分组
         }
         return new Selected(repositoryList, branchList);
     }
@@ -225,8 +229,8 @@ public class DynamicTree extends JPanel {
         GitUtil.generateRepositoryList(base.getRepositories());
         // 修改树
         rootNode.removeAllChildren();
-        createDefaultNode();
-        createTree(base.getRepositories());
+        createGroupNode();
+        createTree();
         // 刷新树
         treeModel.reload();
         expandTree();
@@ -234,11 +238,9 @@ public class DynamicTree extends JPanel {
 
     /**
      * 生成树
-     *
-     * @param repositoryList 仓库列表
      */
-    void createTree(List<Repository> repositoryList) {
-        for (Repository repository : repositoryList) {
+    void createTree() {
+        for (Repository repository : base.getRepositories()) {
             addNode(repository);
         }
     }
@@ -249,10 +251,8 @@ public class DynamicTree extends JPanel {
      * @param repo 仓库
      */
     private void addNode(Repository repo) {
-        DefaultMutableTreeNode parent = defaultNode;
-        if (StringUtils.isNoneBlank(repo.getGroup())) {
-            parent = addObject(rootNode, repo.getGroup(), true);
-        }
+        Map<String, DefaultMutableTreeNode> groups = base.getGroups();
+        DefaultMutableTreeNode parent = groups.getOrDefault(repo.getGroup(), defaultNode);
         DefaultMutableTreeNode rNode = addObject(parent, repo, true);
         for (Branch branch : repo.getBranchList()) {
             addObject(rNode, branch, true);
@@ -353,13 +353,14 @@ public class DynamicTree extends JPanel {
             DefaultMutableTreeNode fromNode = (DefaultMutableTreeNode) nodePath.getLastPathComponent();
             int fromDepth = nodePath.getPathCount();
             if (fromDepth == 4) {
-                // 不能移动分支节点
+                // 排除分支节点
                 JOptionPane.showMessageDialog(tree, "无法移动！", "非法操作", JOptionPane.WARNING_MESSAGE);
                 return;
             }
             DefaultMutableTreeNode toNode = (DefaultMutableTreeNode) toPath.getLastPathComponent();
             int toDepth = toPath.getPathCount();
             if (toDepth < fromDepth) {
+                // 下级->上级
                 toNode.add(fromNode);
             } else if (toDepth == fromDepth) {
                 // 同级移动
