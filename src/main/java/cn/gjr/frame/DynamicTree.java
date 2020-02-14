@@ -179,38 +179,39 @@ public class DynamicTree extends JPanel {
      * 拉取
      */
     void fetch() {
-        Selected selection = getSelection();
-        Set<Repository> repositorySet = selection.getRepositories();
+        Selected selected = getSelection();
+        Set<Repository> repositorySet = selected.getRepositories();
         if (CollectionUtils.isEmpty(repositorySet)) {
             return;
         }
         Pool pool = new Pool(repositorySet.size());
         repositorySet.stream().map(FetchTask::new).forEach(pool::add);
         pool.run();
-        reloadTree(selection.getRepoNodes());
+        reloadTree(selected);
     }
 
     /**
      * 变基
      */
     void rebase() {
-        Selected selection = getSelection();
-        Set<Branch> branchSet = selection.getBranches();
+        Selected selected = getSelection();
+        Set<Branch> branchSet = selected.getBranches();
         if (CollectionUtils.isEmpty(branchSet)) {
             return;
         }
         Pool pool = new Pool(branchSet.size());
         branchSet.stream().map(RebaseTask::new).forEach(pool::add);
         pool.run();
-        reloadTree(selection.getRepoNodes());
+        reloadTree(selected);
     }
 
     /**
      * 更新节点
      *
-     * @param nodes 节点
+     * @param selected 选择
      */
-    private void updateNodes(Set<Node> nodes) {
+    private void updateNodes(Selected selected) {
+        Set<Node> nodes = selected.getRepoNodes();
         Set<Repository> repositories = new HashSet<>(nodes.size());
         Map<Repository, Node> map = new HashMap<>(nodes.size());
         nodes.forEach(e -> {
@@ -266,10 +267,10 @@ public class DynamicTree extends JPanel {
     /**
      * 重新加载树
      *
-     * @param nodes 节点
+     * @param selected 选择
      */
-    private void reloadTree(Set<Node> nodes) {
-        updateNodes(nodes);
+    private void reloadTree(Selected selected) {
+        updateNodes(selected);
         // 刷新树
         treeModel.reload();
         expandTree();
