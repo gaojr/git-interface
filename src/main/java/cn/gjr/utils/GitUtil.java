@@ -202,8 +202,6 @@ public final class GitUtil {
             branchTrack(br, track);
             branchList.add(br);
         }
-        String status = status(repository.getDir()).getMessage().trim();
-        setStatus(repository, status);
         return branchList;
     }
 
@@ -235,7 +233,7 @@ public final class GitUtil {
      * @param repo 分支
      * @param statusStr 分支状态
      */
-    private static void setStatus(Repository repo, String statusStr) {
+    public static void setStatus(Repository repo, String statusStr) {
         if (StringUtils.isBlank(statusStr)) {
             return;
         }

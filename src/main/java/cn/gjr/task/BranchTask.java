@@ -20,5 +20,14 @@ public class BranchTask extends BaseTask {
     public void run() {
         List<Branch> branches = GitUtil.getBranchList(repository);
         repository.setBranchList(branches);
+        setStatus();
+    }
+
+    /**
+     * 修改文件状态
+     */
+    private void setStatus() {
+        String status = GitUtil.status(repository.getDir()).getMessage().trim();
+        GitUtil.setStatus(repository, status);
     }
 }
