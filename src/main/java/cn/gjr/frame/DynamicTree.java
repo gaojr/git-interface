@@ -213,12 +213,16 @@ public class DynamicTree extends JPanel {
         TreePath[] paths = getSelectedPaths();
         Set<Repository> repositoryList = new HashSet<>(paths.length);
         Set<Branch> branchList = new HashSet<>(paths.length);
+        Selected selected = new Selected();
         for (TreePath path : paths) {
             Node node = (Node) path.getLastPathComponent();
             branchList.addAll(node.getBranchList());
             repositoryList.addAll(node.getRepositoryList());
+            selected.addNode(node);
         }
-        return new Selected(repositoryList, branchList);
+        selected.setRepositories(repositoryList);
+        selected.setBranches(branchList);
+        return selected;
     }
 
     /**
