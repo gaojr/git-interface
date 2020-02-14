@@ -24,6 +24,7 @@ public class Pool {
      * @param size 大小
      */
     public Pool(int size) {
+        size = Math.max(size, 1);
         pool = new ThreadPoolExecutor(size, size, 0, TimeUnit.SECONDS,
                 new ArrayBlockingQueue<>(512), // 使用有界队列，避免OOM
                 new ThreadPoolExecutor.DiscardPolicy() // 什么也不做，直接忽略
