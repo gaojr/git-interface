@@ -12,6 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * git util
@@ -262,9 +263,9 @@ public final class GitUtil {
     /**
      * 完善仓库列表
      */
-    public static void generateRepositoryList(List<Repository> repositoryList) {
-        Pool pool = new Pool(repositoryList.size());
-        repositoryList.forEach(e -> {
+    public static void generateRepositories(Set<Repository> repositories) {
+        Pool pool = new Pool(repositories.size());
+        repositories.forEach(e -> {
             BranchTask task = new BranchTask(e);
             pool.add(task);
         });
