@@ -90,6 +90,9 @@ public class Node extends DefaultMutableTreeNode {
                 list.add((Repository) getUserObject());
                 break;
             case TYPE_BRANCH:
+                Node parent = (Node) getParent();
+                list.add((Repository) parent.getUserObject());
+                break;
             default:
                 break;
         }
