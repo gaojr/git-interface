@@ -7,6 +7,7 @@ import cn.gjr.bean.Selected;
 import cn.gjr.task.FetchTask;
 import cn.gjr.task.Pool;
 import cn.gjr.task.RebaseTask;
+import cn.gjr.utils.GitUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
@@ -175,7 +176,7 @@ public class DynamicTree extends JPanel {
     }
 
     /**
-     * TODO 拉取
+     * 拉取
      */
     void fetch() {
         Selected selection = getSelection();
@@ -186,11 +187,11 @@ public class DynamicTree extends JPanel {
         Pool pool = new Pool(repositorySet.size());
         repositorySet.stream().map(FetchTask::new).forEach(pool::add);
         pool.run();
-        reloadTree();
+        reloadTree(selection.getRepoNodes());
     }
 
     /**
-     * TODO 变基
+     * 变基
      */
     void rebase() {
         Selected selection = getSelection();
@@ -201,7 +202,33 @@ public class DynamicTree extends JPanel {
         Pool pool = new Pool(branchSet.size());
         branchSet.stream().map(RebaseTask::new).forEach(pool::add);
         pool.run();
-        reloadTree();
+        reloadTree(selection.getRepoNodes());
+    }
+
+    /**
+     * 更新节点
+     *
+     * @param nodes 节点
+     */
+    private void updateNodes(Set<Node> nodes) {
+        Set<Repository> repositories = new HashSet<>(nodes.size());
+        Map<Repository, Node> map = new HashMap<>(nodes.size());
+        nodes.forEach(e -> {
+            Repository repo = (Repository) e.getUserObject();
+            map.put(repo, e);
+            repositories.add(repo);
+        });
+        GitUtil.generateRepositories(repositories);
+        repositories.forEach(e -> {
+            // 处理仓库节点
+            Node node = map.get(e);
+            node.setUserObject(e);
+            // 处理仓库节点下的分支节点
+            node.removeAllChildren();
+            for (Branch branch : e.getBranchList()) {
+                addObject(node, branch);
+            }
+        });
     }
 
     /**
@@ -240,8 +267,11 @@ public class DynamicTree extends JPanel {
 
     /**
      * 重新加载树
+     *
+     * @param nodes 节点
      */
-    private void reloadTree() {
+    private void reloadTree(Set<Node> nodes) {
+        updateNodes(nodes);
         // 刷新树
         treeModel.reload();
         expandTree();
