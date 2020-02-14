@@ -234,23 +234,22 @@ public final class GitUtil {
      * @param statusStr 分支状态
      */
     public static void setStatus(Repository repo, String statusStr) {
-        if (StringUtils.isBlank(statusStr)) {
-            return;
-        }
-        String[] statuses = statusStr.split("\n");
         int add = 0;
         int delete = 0;
         int modify = 0;
-        for (String status : statuses) {
-            status = status.trim();
-            if (StringUtils.startsWithAny(status, "D", "UD", "UU")) {
-                delete++;
-            } else if (StringUtils.startsWithAny(status, "M", "R")) {
-                modify++;
-            } else if (StringUtils.startsWithAny(status, "??", "A", "UA")) {
-                add++;
+        if (StringUtils.isNotBlank(statusStr)) {
+            String[] statuses = statusStr.split("\n");
+            for (String status : statuses) {
+                status = status.trim();
+                if (StringUtils.startsWithAny(status, "D", "UD", "UU")) {
+                    delete++;
+                } else if (StringUtils.startsWithAny(status, "M", "R")) {
+                    modify++;
+                } else if (StringUtils.startsWithAny(status, "??", "A", "UA")) {
+                    add++;
+                }
+                // TODO 还有一些奇怪的状态……例如: copied {@link https://git-scm.com/docs/git-status#_changed_tracked_entries}
             }
-            // TODO 还有一些奇怪的状态……例如: copied {@link https://git-scm.com/docs/git-status#_changed_tracked_entries}
         }
         repo.setAdd(add);
         repo.setDelete(delete);
