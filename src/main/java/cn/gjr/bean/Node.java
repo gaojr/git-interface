@@ -122,4 +122,56 @@ public class Node extends DefaultMutableTreeNode {
         }
         return list;
     }
+
+    /**
+     * 获取节点所属的仓库节点
+     *
+     * @return 节点
+     */
+    public List<Node> getRepositoryNode() {
+        List<Node> list = new ArrayList<>();
+        switch (type) {
+            case TYPE_ROOT:
+            case TYPE_GROUP:
+                for (int i = 0; i < getChildCount(); i++) {
+                    Node node = (Node) getChildAt(i);
+                    list.addAll(node.getRepositoryNode());
+                }
+                break;
+            case TYPE_REPO:
+                list.add(this);
+                break;
+            case TYPE_BRANCH:
+                list.add((Node) getParent());
+                break;
+            default:
+                break;
+        }
+        return list;
+    }
+
+    /**
+     * 获取节点所属的分支节点
+     *
+     * @return 节点
+     */
+    public List<Node> getBranchNode() {
+        List<Node> list = new ArrayList<>();
+        switch (type) {
+            case TYPE_ROOT:
+            case TYPE_GROUP:
+            case TYPE_REPO:
+                for (int i = 0; i < getChildCount(); i++) {
+                    Node node = (Node) getChildAt(i);
+                    list.addAll(node.getBranchNode());
+                }
+                break;
+            case TYPE_BRANCH:
+                list.add(this);
+                break;
+            default:
+                break;
+        }
+        return list;
+    }
 }
