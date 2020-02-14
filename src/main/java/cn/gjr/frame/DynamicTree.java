@@ -220,9 +220,7 @@ public class DynamicTree extends JPanel {
         });
         GitUtil.generateRepositories(repositories);
         repositories.forEach(e -> {
-            // 处理仓库节点
             Node node = map.get(e);
-            node.setUserObject(e);
             // 处理仓库节点下的分支节点
             node.removeAllChildren();
             for (Branch branch : e.getBranchList()) {
