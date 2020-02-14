@@ -179,7 +179,7 @@ public class DynamicTree extends JPanel {
      */
     void fetch() {
         Selected selection = getSelection();
-        Set<Repository> repositorySet = selection.getRepositorySet();
+        Set<Repository> repositorySet = selection.getRepositories();
         if (CollectionUtils.isEmpty(repositorySet)) {
             return;
         }
@@ -194,7 +194,7 @@ public class DynamicTree extends JPanel {
      */
     void rebase() {
         Selected selection = getSelection();
-        Set<Branch> branchSet = selection.getBranchSet();
+        Set<Branch> branchSet = selection.getBranches();
         if (CollectionUtils.isEmpty(branchSet)) {
             return;
         }
@@ -205,33 +205,17 @@ public class DynamicTree extends JPanel {
     }
 
     /**
-     * TODO 获取已选的仓库列表和分支列表
+     * 获取已选的仓库列表和分支列表
      *
      * @return 选择对象
      */
     private Selected getSelection() {
         TreePath[] paths = getSelectedPaths();
-        List<Repository> repositoryList = new ArrayList<>(paths.length);
-        List<Branch> branchList = new ArrayList<>(paths.length);
+        Set<Repository> repositoryList = new HashSet<>(paths.length);
+        Set<Branch> branchList = new HashSet<>(paths.length);
         for (TreePath path : paths) {
             Node node = (Node) path.getLastPathComponent();
-            if (node.isRoot()) {
-                // 是根节点
-                return new Selected(node.getRepositoryList(), Collections.emptyList());
-            }
-            Object obj = node.getUserObject();
-            if (GitUtil.isBranch(obj)) {
-                // 是分支
-                Branch b = (Branch) obj;
-                branchList.add(b);
-            } else if (GitUtil.isRepository(obj)) {
-                // 是仓库
-                Repository r = (Repository) obj;
-                repositoryList.add(r);
-            } else {
-                // 是分组
-                repositoryList.addAll(node.getRepositoryList());
-            }
+            branchList.addAll(node.getBranchList());
             repositoryList.addAll(node.getRepositoryList());
         }
         return new Selected(repositoryList, branchList);
