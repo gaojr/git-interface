@@ -254,7 +254,6 @@ public final class GitUtil {
         repo.setAdd(add);
         repo.setDelete(delete);
         repo.setModify(modify);
-        repo.setCanRebase(add < 1 && modify < 1 && delete < 1);
     }
 
     /**

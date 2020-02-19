@@ -41,11 +41,6 @@ public class Repository {
     @Expose
     private List<Branch> branchList;
     /**
-     * 能否直接变基
-     */
-    @Expose
-    private boolean canRebase = true;
-    /**
      * 新增文件数量
      */
     @Expose
@@ -60,6 +55,15 @@ public class Repository {
      */
     @Expose
     private int delete = 0;
+
+    /**
+     * 能否直接变基
+     *
+     * @return {@code true} 能
+     */
+    public boolean canRebase() {
+        return add < 1 && modify < 1 && delete < 1;
+    }
 
     @Override
     public String toString() {
