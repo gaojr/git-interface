@@ -2,6 +2,7 @@ package cn.gjr.bean;
 
 import com.google.gson.annotations.Expose;
 import lombok.Data;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Objects;
 
@@ -42,6 +43,15 @@ public class Branch {
      */
     @Expose
     private int behind = 0;
+
+    /**
+     * 是否有远端
+     *
+     * @return {@code true} 有
+     */
+    public boolean hasUpstream() {
+        return StringUtils.isNotBlank(upstream);
+    }
 
     @Override
     public String toString() {

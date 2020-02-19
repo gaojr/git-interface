@@ -200,7 +200,7 @@ public class DynamicTree extends JPanel {
             return;
         }
         Pool pool = new Pool(branchSet.size());
-        branchSet.stream().map(RebaseTask::new).forEach(pool::add);
+        branchSet.stream().filter(Branch::hasUpstream).map(RebaseTask::new).forEach(pool::add);
         pool.run();
         reloadTree(selected);
     }
