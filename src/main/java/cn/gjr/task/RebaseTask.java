@@ -23,5 +23,6 @@ public class RebaseTask extends BaseTask {
     @Override
     public void run() {
         GitUtil.rebase(branch);
+        // TODO rebase失败后的处理
     }
 }
