@@ -5,7 +5,7 @@ import cn.gjr.bean.Node;
 import cn.gjr.bean.Repository;
 import cn.gjr.bean.Selected;
 import cn.gjr.task.FetchTask;
-import cn.gjr.task.Pool;
+import cn.gjr.task.TaskPool;
 import cn.gjr.task.RebaseTask;
 import cn.gjr.utils.GitUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -184,7 +184,7 @@ public class DynamicTree extends JPanel {
         if (CollectionUtils.isEmpty(repositorySet)) {
             return;
         }
-        Pool pool = new Pool(repositorySet.size());
+        TaskPool pool = new TaskPool(repositorySet.size());
         repositorySet.stream().map(FetchTask::new).forEach(pool::add);
         pool.run();
         reloadTree(selected);
@@ -199,7 +199,7 @@ public class DynamicTree extends JPanel {
         if (CollectionUtils.isEmpty(branchSet)) {
             return;
         }
-        Pool pool = new Pool(branchSet.size());
+        TaskPool pool = new TaskPool(branchSet.size());
         branchSet.stream().filter(Branch::hasUpstream).map(RebaseTask::new).forEach(pool::add);
         pool.run();
         reloadTree(selected);

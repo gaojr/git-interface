@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
  *
  * @author GaoJunru
  */
-public class Pool {
+public class TaskPool {
     /**
      * 线程池
      */
@@ -23,7 +23,7 @@ public class Pool {
      *
      * @param size 大小
      */
-    public Pool(int size) {
+    public TaskPool(int size) {
         size = Math.max(size, 1);
         pool = new ThreadPoolExecutor(size, size, 0, TimeUnit.SECONDS,
                 new ArrayBlockingQueue<>(512), // 使用有界队列，避免OOM

@@ -4,7 +4,7 @@ import cn.gjr.bean.Branch;
 import cn.gjr.bean.CommandResult;
 import cn.gjr.bean.Repository;
 import cn.gjr.task.BranchTask;
-import cn.gjr.task.Pool;
+import cn.gjr.task.TaskPool;
 import com.google.gson.JsonObject;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -260,7 +260,7 @@ public final class GitUtil {
      * 完善仓库列表
      */
     public static void generateRepositories(Set<Repository> repositories) {
-        Pool pool = new Pool(repositories.size());
+        TaskPool pool = new TaskPool(repositories.size());
         repositories.forEach(e -> {
             BranchTask task = new BranchTask(e);
             pool.add(task);
