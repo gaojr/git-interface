@@ -63,6 +63,7 @@ public class Node extends DefaultMutableTreeNode {
                 break;
             case TYPE_GROUP:
                 list.add((String) getUserObject());
+                break;
             case TYPE_REPO:
             case TYPE_BRANCH:
             default:
@@ -117,6 +118,7 @@ public class Node extends DefaultMutableTreeNode {
                 break;
             case TYPE_BRANCH:
                 list.add((Branch) getUserObject());
+                break;
             default:
                 break;
         }
