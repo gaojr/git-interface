@@ -3,8 +3,10 @@ package cn.gjr.utils;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * 文件 util
@@ -14,6 +16,16 @@ import java.io.IOException;
 @Slf4j
 public final class FileUtil {
     private FileUtil() {
+    }
+
+    /**
+     * 是否为文件
+     *
+     * @param file 文件
+     * @return {@code true} 存在且为文件
+     */
+    public static boolean isFile(File file) {
+        return file != null && file.exists() && file.isFile();
     }
 
     /**
@@ -28,17 +40,17 @@ public final class FileUtil {
     }
 
     /**
-     * 是否为图片(bmp/gif/jpg/png)
+     * 返回图片(bmp/gif/jpg/png)
      *
-     * @param file 文件
-     * @return {@code true} 是
+     * @param is 文件
+     * @return 图片
      */
-    public static boolean isImage(File file) {
+    public static BufferedImage getImage(InputStream is) {
         try {
-            return ImageIO.read(file) != null;
+            return ImageIO.read(is);
         } catch (IOException e) {
             log.error("图片读取失败", e);
         }
-        return false;
+        return null;
     }
 }

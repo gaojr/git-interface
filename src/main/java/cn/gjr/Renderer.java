@@ -17,15 +17,15 @@ public class Renderer extends DefaultTreeCellRenderer {
     /**
      * 分组图标
      */
-    private transient Icon groupIcon = new ImageIcon(Icons.GROUP.toString());
+    private static final Icon groupIcon = new ImageIcon(Icons.GROUP.getValue());
     /**
      * 仓库图标
      */
-    private transient Icon repositoryIcon = new ImageIcon(Icons.REPOSITORY.toString());
+    private static final Icon repositoryIcon = new ImageIcon(Icons.REPOSITORY.getValue());
     /**
      * 分支图标
      */
-    private transient Icon branchIcon = new ImageIcon(Icons.BRANCH.toString());
+    private static final Icon branchIcon = new ImageIcon(Icons.BRANCH.getValue());
 
     @Override
     public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus) {
