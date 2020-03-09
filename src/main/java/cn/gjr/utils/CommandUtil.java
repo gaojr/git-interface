@@ -40,13 +40,17 @@ public final class CommandUtil {
         String errorMsg;
         try {
             Process process = Runtime.getRuntime().exec(command, null, dir);
+            String msg = IOUtils.toString(process.getInputStream(), StandardCharsets.UTF_8);
             errorMsg = IOUtils.toString(process.getErrorStream(), StandardCharsets.UTF_8);
+            log.info("\n{}[{}]{}\n*---*\n{}\n*---*\n{}\n*****", dir, command, process.waitFor(), msg, errorMsg);
             if (StringUtils.isEmpty(errorMsg)) {
-                String msg = IOUtils.toString(process.getInputStream(), StandardCharsets.UTF_8);
                 return success(command, msg);
             }
         } catch (IOException e) {
             errorMsg = e.getMessage();
+        } catch (InterruptedException e) {
+            errorMsg = e.getMessage();
+            Thread.currentThread().interrupt();
         }
         log.error("command [{}] failed! error message: {}", command, errorMsg);
         return fail(command, errorMsg);
