@@ -20,6 +20,8 @@ import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.*;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +44,14 @@ public class Base {
      */
     TypeToken<List<Repository>> repoToken = new TypeToken<List<Repository>>() {
     };
+    /**
+     * 缓存文件路径-分组
+     */
+    private static String groupFilePath = "group.json";
+    /**
+     * 缓存文件路径-仓库
+     */
+    private static String repositoryFilePath = "repository.json";
     /**
      * 缓存文件-分组
      */
@@ -77,6 +87,10 @@ public class Base {
         if (!GitUtil.hasGit()) {
             log.error("未安装git!!");
             return;
+        }
+        if (args != null && args.length > 1) {
+            repositoryFilePath = args[0];
+            groupFilePath = args[1];
         }
         new Base();
     }
@@ -120,7 +134,8 @@ public class Base {
      * 生成并显示界面
      */
     private void createAndShowGUI() {
-        if (initConfigFile()) {
+        if (!initConfigFile()) {
+            log.error("获取配置文件失败！");
             return;
         }
         // 处理分支
@@ -143,8 +158,19 @@ public class Base {
      * @return {@code true} 初始化失败
      */
     private boolean initConfigFile() {
-        repositoryFile = new File("repository.json");
-        groupFile = new File("group.json");
+        repositoryFile = new File(repositoryFilePath);
+        groupFile = new File(groupFilePath);
+        if (FileUtil.isFile(repositoryFile) && FileUtil.isFile(groupFile)) {
+            return true;
+        }
+        try {
+            URL url = Base.class.getResource("/cache/repository.json");
+            repositoryFile = new File(url.toURI());
+            url = Base.class.getResource("/cache/group.json");
+            groupFile = new File(url.toURI());
+        } catch (URISyntaxException e) {
+            return false;
+        }
         return FileUtil.isFile(repositoryFile) && FileUtil.isFile(groupFile);
     }
 
