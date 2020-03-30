@@ -20,8 +20,6 @@ import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.*;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -160,17 +158,6 @@ public class Base {
     private boolean initConfigFile() {
         repositoryFile = new File(repositoryFilePath);
         groupFile = new File(groupFilePath);
-        if (FileUtil.isFile(repositoryFile) && FileUtil.isFile(groupFile)) {
-            return true;
-        }
-        try {
-            URL url = Base.class.getResource("/cache/repository.json");
-            repositoryFile = new File(url.toURI());
-            url = Base.class.getResource("/cache/group.json");
-            groupFile = new File(url.toURI());
-        } catch (URISyntaxException e) {
-            return false;
-        }
         return FileUtil.isFile(repositoryFile) && FileUtil.isFile(groupFile);
     }
 
