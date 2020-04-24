@@ -1,4 +1,3 @@
-
 # Created by https://www.gitignore.io/api/android,angular,chocolatey,dbeaver,docker,eclipse,git,intellij+all,java,java-web,linux,maven,netbeans,node,powershell,python,sonar,sonarqube,svn,unity,vim,visualstudiocode,vue,web,windows
 # Edit at https://www.gitignore.io/?templates=android,angular,chocolatey,dbeaver,docker,eclipse,git,intellij+all,java,java-web,linux,maven,netbeans,node,powershell,python,sonar,sonarqube,svn,unity,vim,visualstudiocode,vue,web,windows
 
@@ -132,8 +131,6 @@ e2e/*.map
 ### DBeaver ###
 # ide config file
 .dbeaver-data-sources*.xml
-
-#!! ERROR: docker is undefined. Use list command to see defined gitignore types !!#
 
 ### Eclipse ###
 .metadata
@@ -722,3 +719,5 @@ $RECYCLE.BIN/
 *.lnk
 
 # End of https://www.gitignore.io/api/android,angular,chocolatey,dbeaver,docker,eclipse,git,intellij+all,java,java-web,linux,maven,netbeans,node,powershell,python,sonar,sonarqube,svn,unity,vim,visualstudiocode,vue,web,windows
+
+!start/*.jar
