@@ -75,13 +75,7 @@ public class Base {
      */
     private DynamicTreeDemo demo;
 
-    private Base() {
-        // Schedule a job for the event-dispatching thread: creating and showing this application's GUI.
-        // For thread safety, this method should be invoked from the event-dispatching thread.
-        javax.swing.SwingUtilities.invokeLater(this::createAndShowGUI);
-    }
-
-    public static void main(String[] args) {
+    public Base(String[] args) {
         if (!GitUtil.hasGit()) {
             log.error("未安装git!!");
             return;
@@ -90,7 +84,7 @@ public class Base {
             repositoryFilePath = args[0];
             groupFilePath = args[1];
         }
-        new Base();
+        createAndShowGUI();
     }
 
     /**

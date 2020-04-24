@@ -1,0 +1,6 @@
+spring:
+  gson:
+    serialize-nulls: true
+    exclude-fields-without-expose-annotation: true
+logging:
+  config: classpath:logback.xml
