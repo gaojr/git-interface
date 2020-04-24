@@ -1,7 +1,7 @@
-package cn.gjr;
+package cn.gjr.gitinterface;
 
-import cn.gjr.constants.Icons;
-import cn.gjr.utils.GitUtil;
+import cn.gjr.gitinterface.constants.Icons;
+import cn.gjr.gitinterface.utils.GitUtil;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;

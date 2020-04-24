@@ -1,4 +1,4 @@
-package cn.gjr.bean;
+package cn.gjr.gitinterface.bean;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

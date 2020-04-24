@@ -1,4 +1,4 @@
-package cn.gjr.utils;
+package cn.gjr.gitinterface.utils;
 
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;

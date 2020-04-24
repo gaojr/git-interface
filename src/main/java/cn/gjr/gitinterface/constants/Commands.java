@@ -1,4 +1,4 @@
-package cn.gjr.constants;
+package cn.gjr.gitinterface.constants;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

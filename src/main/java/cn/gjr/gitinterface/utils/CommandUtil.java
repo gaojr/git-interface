@@ -1,6 +1,6 @@
-package cn.gjr.utils;
+package cn.gjr.gitinterface.utils;
 
-import cn.gjr.bean.CommandResult;
+import cn.gjr.gitinterface.bean.CommandResult;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;

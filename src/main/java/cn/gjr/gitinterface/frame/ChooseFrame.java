@@ -1,11 +1,11 @@
-package cn.gjr.frame;
+package cn.gjr.gitinterface.frame;
 
-import cn.gjr.Base;
-import cn.gjr.bean.Branch;
-import cn.gjr.bean.Repository;
-import cn.gjr.constants.Commands;
-import cn.gjr.constants.Titles;
-import cn.gjr.utils.GitUtil;
+import cn.gjr.gitinterface.Base;
+import cn.gjr.gitinterface.bean.Branch;
+import cn.gjr.gitinterface.bean.Repository;
+import cn.gjr.gitinterface.constants.Commands;
+import cn.gjr.gitinterface.constants.Titles;
+import cn.gjr.gitinterface.utils.GitUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 

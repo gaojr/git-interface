@@ -1,13 +1,13 @@
-package cn.gjr.frame;
+package cn.gjr.gitinterface.frame;
 
-import cn.gjr.bean.Branch;
-import cn.gjr.bean.Node;
-import cn.gjr.bean.Repository;
-import cn.gjr.bean.Selected;
-import cn.gjr.task.FetchTask;
-import cn.gjr.task.TaskPool;
-import cn.gjr.task.RebaseTask;
-import cn.gjr.utils.GitUtil;
+import cn.gjr.gitinterface.bean.Branch;
+import cn.gjr.gitinterface.bean.Node;
+import cn.gjr.gitinterface.bean.Repository;
+import cn.gjr.gitinterface.bean.Selected;
+import cn.gjr.gitinterface.task.FetchTask;
+import cn.gjr.gitinterface.task.TaskPool;
+import cn.gjr.gitinterface.task.RebaseTask;
+import cn.gjr.gitinterface.utils.GitUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;

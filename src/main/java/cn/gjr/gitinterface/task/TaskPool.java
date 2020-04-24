@@ -1,4 +1,4 @@
-package cn.gjr.task;
+package cn.gjr.gitinterface.task;
 
 import lombok.SneakyThrows;
 

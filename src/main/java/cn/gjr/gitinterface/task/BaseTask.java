@@ -1,6 +1,6 @@
-package cn.gjr.task;
+package cn.gjr.gitinterface.task;
 
-import cn.gjr.bean.Repository;
+import cn.gjr.gitinterface.bean.Repository;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 

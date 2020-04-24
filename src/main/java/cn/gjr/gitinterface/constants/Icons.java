@@ -1,6 +1,6 @@
-package cn.gjr.constants;
+package cn.gjr.gitinterface.constants;
 
-import cn.gjr.utils.FileUtil;
+import cn.gjr.gitinterface.utils.FileUtil;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

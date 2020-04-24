@@ -1,8 +1,8 @@
-package cn.gjr.frame;
+package cn.gjr.gitinterface.frame;
 
-import cn.gjr.Base;
-import cn.gjr.constants.Commands;
-import cn.gjr.constants.Titles;
+import cn.gjr.gitinterface.Base;
+import cn.gjr.gitinterface.constants.Commands;
+import cn.gjr.gitinterface.constants.Titles;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.swing.*;

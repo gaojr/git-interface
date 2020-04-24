@@ -1,10 +1,10 @@
-package cn.gjr.utils;
+package cn.gjr.gitinterface.utils;
 
-import cn.gjr.bean.Branch;
-import cn.gjr.bean.CommandResult;
-import cn.gjr.bean.Repository;
-import cn.gjr.task.BranchTask;
-import cn.gjr.task.TaskPool;
+import cn.gjr.gitinterface.bean.Branch;
+import cn.gjr.gitinterface.bean.CommandResult;
+import cn.gjr.gitinterface.bean.Repository;
+import cn.gjr.gitinterface.task.BranchTask;
+import cn.gjr.gitinterface.task.TaskPool;
 import com.google.gson.JsonObject;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;

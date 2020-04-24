@@ -1,4 +1,4 @@
-package cn.gjr.utils;
+package cn.gjr.gitinterface.utils;
 
 import lombok.extern.slf4j.Slf4j;
 

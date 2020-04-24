@@ -1,10 +1,10 @@
-package cn.gjr;
+package cn.gjr.gitinterface;
 
-import cn.gjr.bean.Repository;
-import cn.gjr.frame.DynamicTreeDemo;
-import cn.gjr.utils.FileUtil;
-import cn.gjr.utils.GitUtil;
-import cn.gjr.utils.JsonUtil;
+import cn.gjr.gitinterface.bean.Repository;
+import cn.gjr.gitinterface.frame.DynamicTreeDemo;
+import cn.gjr.gitinterface.utils.FileUtil;
+import cn.gjr.gitinterface.utils.GitUtil;
+import cn.gjr.gitinterface.utils.JsonUtil;
 import com.google.gson.JsonArray;
 import com.google.gson.reflect.TypeToken;
 import lombok.Getter;

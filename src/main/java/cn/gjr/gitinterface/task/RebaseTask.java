@@ -1,7 +1,7 @@
-package cn.gjr.task;
+package cn.gjr.gitinterface.task;
 
-import cn.gjr.bean.Branch;
-import cn.gjr.utils.GitUtil;
+import cn.gjr.gitinterface.bean.Branch;
+import cn.gjr.gitinterface.utils.GitUtil;
 import lombok.extern.slf4j.Slf4j;
 
 /**
