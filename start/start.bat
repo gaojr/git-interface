@@ -1,3 +1,3 @@
 @echo off
 hidecon.exe
-java -jar git-interface.jar
+java -jar git-interface.jar "repository.json" "group.json"
